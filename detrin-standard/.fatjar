@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Tue Mar 29 17:29:59 CEST 2011
+onejar.license.required=true
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=/home/nina/workspace/Masterthesis/detrin-gui/plugins/Standard.jar
+manifest.mergeall=true
+manifest.mainclass=
+manifest.file=<createnew>
+jarname.isextern=true
+onejar.expand=
+excludes=<po|detrin-base>
+includes=
