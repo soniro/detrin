@@ -1,11 +1,15 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.soniro.detrin</groupId>
     <artifactId>detrin-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.1-SNAPSHOT</version>
     <name>DeTrIn - Core</name>
     <url>http://code.google.de/p/detrin</url>
+    <parent>
+    	<groupId>de.soniro.detrin</groupId>
+    	<artifactId>detrin</artifactId>
+    	<version>1.0.1-SNAPSHOT</version>
+    </parent>
     <dependencies>
         <dependency>
             <groupId>de.soniro.detrin</groupId>
@@ -20,8 +24,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,14 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.soniro.detrin</groupId>
+    <artifactId>detrin</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.1-SNAPSHOT</version>
+    <name>DeTrIn</name>
+    <modules>
+        <module>detrin-core</module>
+        <module>detrin-base</module>
+        <module>detrin-gui</module>
+        <module>detrin-standard</module>
+    </modules>
+</project>
