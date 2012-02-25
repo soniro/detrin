@@ -68,7 +68,7 @@ public class PluginClassLoader extends URLClassLoader {
 						classesForInterface.get(currentInterface).add(currentClass);
 					}
 				} catch (Throwable e) {
-					System.out.println(String.format("Ein(e) %s ist aufgetreten: %s", e.getClass().getName(), e.getMessage()));;
+					System.out.println(String.format("Ein(e) %s ist aufgetreten: %s", e.getClass().getName(), e.getMessage()));
 				}
 			}
 		}
@@ -87,7 +87,7 @@ public class PluginClassLoader extends URLClassLoader {
 	
 	private void initClassesForInterface() {
 		for (URL url : getURLs()) {
-			try {
+			try {				
 				setClassesForInterface(new JarFile(new File(url.toURI())));
 			} catch (URISyntaxException e) {
 					

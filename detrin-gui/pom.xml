@@ -37,15 +37,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -54,9 +45,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                             <mainClass>de.soniro.detrin.gui.Main</mainClass>
                         </manifest>
                     </archive>
-                    <descriptors>
-                        <descriptor>build/jar-with-packed-dependencies-assembly.xml</descriptor>
-                    </descriptors>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
