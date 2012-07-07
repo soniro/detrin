@@ -14,8 +14,8 @@ import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 
 /**
- * TreeVisualisation
- * 
+ * TreeVisualisation.
+ *
  * @author Nina Rothenberg
  *
  * @param <V> - Typ of nodes
@@ -29,19 +29,19 @@ public class DecisionTreeVisualizationViewer<V, E> extends VisualizationViewer<V
 		super(layout);
 		init();
 	}
-	
+
 	public DecisionTreeVisualizationViewer(Layout<V, E> layout,
 			Dimension preferredSize) {
 		super(layout, preferredSize);
 		init();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void init() {
 		setBackground(Color.white);
         getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<V, E>());
         getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<E>());
-        getRenderContext().setVertexLabelTransformer(new ToStringLabeller<V>()); 
+        getRenderContext().setVertexLabelTransformer(new ToStringLabeller<V>());
 //        getRenderContext().setVertexShapeTransformer(new ConstantTransformer(
 //        		new RoundRectangle2D.Float(-40,-20,80,40, 10, 10)));
         getRenderContext().setVertexIconTransformer(new ConstantTransformer(new ImageIcon(getClass().getResource("/images/knoten.png"))));

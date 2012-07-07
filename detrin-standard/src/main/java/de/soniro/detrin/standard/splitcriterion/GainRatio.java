@@ -10,41 +10,41 @@ import de.soniro.detrin.SplitInput;
 import de.soniro.detrin.model.Attribute;
 import de.soniro.detrin.model.Dataset;
 import de.soniro.detrin.model.Interval;
+import de.soniro.detrin.model.Interval.BorderType;
 import de.soniro.detrin.model.NominalAttribute;
 import de.soniro.detrin.model.NumericAttribute;
-import de.soniro.detrin.model.Interval.BorderType;
 import de.soniro.detrin.standard.Messages;
 
 public class GainRatio implements SplitCriterion {
 
 	public static final String LABEL = Messages.getString("GainRatio.LABEL");
-	
+
 	private String explanation;
-	
+
 	private Attribute<?> bestAttributeForSplit;
-	
+
 	private Double bestSplit;
-	
+
 	@Override
 	public Attribute<?> getBestAttributeForSplit(SplitInput input) {
 		explanation = "";
 		bestAttributeForSplit = null;
 		bestSplit = null;
-		
+
 		InformationGain informationGainSplitCriterion = new InformationGain();
 		for (Attribute<?> attribute : input.getAttributes()) {
 			if (!(attribute instanceof NominalAttribute)) {
-				createNominalGroups((NumericAttribute)attribute, input.getTrainingsset(), input.getTargetAttribute(), informationGainSplitCriterion);
+				createNominalGroups((NumericAttribute) attribute, input.getTrainingsset(), input.getTargetAttribute(), informationGainSplitCriterion);
 			}
 			Double informationGain;
 			if (attribute instanceof NumericAttribute) {
-				informationGain = informationGainSplitCriterion.getInformationGain(input.getTrainingsset(), (NumericAttribute)attribute, input.getTargetAttribute());
+				informationGain = informationGainSplitCriterion.getInformationGain(input.getTrainingsset(), (NumericAttribute) attribute, input.getTargetAttribute());
 			} else {
 				informationGain = informationGainSplitCriterion.getInformationGain(input.getTrainingsset(), attribute, input.getTargetAttribute());
 			}
 			Double splitEntropy;
 			if (attribute instanceof NumericAttribute) {
-				splitEntropy = informationGainSplitCriterion.calculateEntropy((NumericAttribute)attribute, input.getTrainingsset());
+				splitEntropy = informationGainSplitCriterion.calculateEntropy((NumericAttribute) attribute, input.getTrainingsset());
 			} else {
 				splitEntropy = informationGainSplitCriterion.calculateEntropy(attribute, input.getTrainingsset());
 			}
@@ -73,7 +73,7 @@ public class GainRatio implements SplitCriterion {
 			String currentSplitExplanation = "";
 			attribute.getGroups().clear();
 			Double first = Double.parseDouble(String.valueOf(currentValues.get(i)));
-			Double second = Double.parseDouble(String.valueOf(currentValues.get(i+1)));
+			Double second = Double.parseDouble(String.valueOf(currentValues.get(i + 1)));
 			Double createThreshold = (first + second) / 2;
 			Interval upperBound = new Interval(createThreshold, BorderType.UPPER_BORDER);
 			Interval lowerBound = new Interval(createThreshold, BorderType.LOWER_BORDER);
@@ -110,9 +110,9 @@ public class GainRatio implements SplitCriterion {
 		attribute.addGroup(lowerBound);
 		explanation += "Der beste Split f&uuml;r das Attribut " + attribute.getName() + " sind die Intervalle "
 			+ lowerBound.toString() + " und " + upperBound.toString() + ". Diese haben eine Gain Ratio von: " + round(bestGainRatio)
-			+ "<br/><br/>Folgende Intervalle wurden getestet: ";	
+			+ "<br/><br/>Folgende Intervalle wurden getestet: ";
 		for (String currentSplitExplanation : splitExplanations) {
-			explanation+="<br/>" + currentSplitExplanation;
+			explanation += "<br/>" + currentSplitExplanation;
 		}
 		explanation += "<br/><br/>";
 	}
@@ -126,9 +126,9 @@ public class GainRatio implements SplitCriterion {
 	public String getExplanation(Locale locale) {
 		return explanation;
 	}
-	
+
 	private String round(Double value) {
-		return String.valueOf(Math.round( value * 10000. ) / 10000.);
+		return String.valueOf(Math.round(value * 10000.) / 10000.);
 	}
 
 }

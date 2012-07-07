@@ -12,10 +12,10 @@ import de.soniro.detrin.model.DecisionTree;
  */
 public class PruningInput {
 	
-	DecisionTree decisionTree;
-	Dataset trainingsset;
-	Dataset testset;
-	Attribute<?> targetAttribute;
+	private DecisionTree decisionTree;
+	private Dataset trainingsset;
+	private Dataset testset;
+	private Attribute<?> targetAttribute;
 	
 	public DecisionTree getDecisionTree() {
 		return decisionTree;

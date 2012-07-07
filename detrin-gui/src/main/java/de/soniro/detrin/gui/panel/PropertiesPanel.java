@@ -32,10 +32,10 @@ import de.soniro.detrin.model.Attribute;
 import de.soniro.detrin.model.Dataset;
 import de.soniro.detrin.model.Properties;
 
-public class PropertiesPanel extends JPanel {
-	
+public final class PropertiesPanel extends JPanel {
+
 	private static final long serialVersionUID = -5130940127856740498L;
-	
+
 	public JPanel algorithmPanel = new JPanel();
 	public JComboBox targetAttributeComboBox = new JComboBox();
 	public JComboBox splitCriterionComboBox;
@@ -56,23 +56,23 @@ public class PropertiesPanel extends JPanel {
 	private final Map<String, SplitCriterion> splitCriterionMap = new HashMap<String, SplitCriterion>();
 	private final Map<String, StopCriterion> stopCriterionMap = new HashMap<String, StopCriterion>();
 	private final Map<String, PruningMethod> pruningMethodMap = new HashMap<String, PruningMethod>();
-	
+
 	private Properties propertiesOfCurrentTree;
-	
+
 	private static PropertiesPanel instance;
-	
+
 	public static PropertiesPanel getInstance() {
 		if (instance == null) {
 			instance = new PropertiesPanel();
 		}
 		return instance;
 	}
-	
+
 	private PropertiesPanel() {
 		super(new GridBagLayout());
 		createPropertiesPanel();
 	}
-	
+
 	private void createPropertiesPanel() {
 		createMap(algorithmMap, Algorithm.class);
 		createMap(splitCriterionMap, SplitCriterion.class);
@@ -86,15 +86,14 @@ public class PropertiesPanel extends JPanel {
 			algorithmPanel.add(radioButton);
 			radioGroup.add(radioButton);
 			radioButton.addActionListener(new ActionListener() {
-				
-				@Override
+
 				public void actionPerformed(ActionEvent e) {
 					setPropertiesForAlgorithm(currentAlgorithm);
 				}
 			});
 		}
 		pruningMethodMap.put("<Kein Pruning>", null);
-		
+
 		splitCriterionComboBox = new SortedComboBox(splitCriterionMap.keySet().toArray());
 		stopCriterionComboBox = new SortedComboBox(stopCriterionMap.keySet().toArray());
 		pruningMethodComboBox = new SortedComboBox(pruningMethodMap.keySet().toArray());
@@ -115,13 +114,13 @@ public class PropertiesPanel extends JPanel {
 		add(minimumInstanceCount, createGridBagConstraint(1, 5));
 		add(button, createGridBagConstraint(1, 9, GridBagConstraints.EAST));
 	}
-	
+
 	private void setPropertiesForAlgorithm(Algorithm algorithm) {
 		selectItemForClass(splitCriterionComboBox, splitCriterionMap, algorithm.getPrimarySplitCriterion());
 		selectItemForClass(stopCriterionComboBox, stopCriterionMap, algorithm.getPrimaryStopCriterion());
 		selectItemForClass(pruningMethodComboBox, pruningMethodMap, algorithm.getPrimaryPruningMethod());
 	}
-	
+
 	private void selectItemForClass(JComboBox comboBox, Map<String, ?> objectMap, Class<?> classForSelection) {
 		if (classForSelection == null) {
 			comboBox.setSelectedIndex(0);
@@ -149,21 +148,21 @@ public class PropertiesPanel extends JPanel {
 		gbc.anchor = anchor;
 		return gbc;
 	}
-	
+
 	public <T extends Extensionable> void createMap(Map<String, T> map, Class<T> instanceClass) {
-		List<T> instances = DeTrInGui.detrin.getAllPossibleInstances(instanceClass);
+		List<T> instances = DeTrInGui.DETRIN.getAllPossibleInstances(instanceClass);
 		for (T instance : instances) {
 			map.put(instance.getLabel(Messages.getInstance().getLocale()), instance);
 		}
 	}
-	
+
 	public void updateTargetAttribute(Dataset dataset) {
 		targetAttributeComboBox.removeAllItems();
 		for (Attribute<?> attribute : dataset.getAttributes()) {
 			targetAttributeComboBox.addItem(attribute);
 		}
 	}
-	
+
 	public void updateLabels() {
 		algorithmLabel.setText(Messages.getInstance().getLabel(Message.ALGORITHM));
 		targetAttributeLabel.setText(Messages.getInstance().getLabel(
@@ -180,23 +179,23 @@ public class PropertiesPanel extends JPanel {
 		button.setText(Messages.getInstance().getLabel(
 				Message.GENERATE_DECISION_TREE));
 	}
-	
+
 	public Attribute<?> getTargetAttribute() {
 		return (Attribute<?>) targetAttributeComboBox.getSelectedItem();
 	}
-	
+
 	public SplitCriterion getSplitCriterion() {
 		return splitCriterionMap.get(splitCriterionComboBox.getSelectedItem());
 	}
-	
+
 	public StopCriterion getStopCriterion() {
 		return stopCriterionMap.get(stopCriterionComboBox.getSelectedItem());
 	}
-	
+
 	public PruningMethod getPruningMethod() {
 		return pruningMethodMap.get(pruningMethodComboBox.getSelectedItem());
 	}
-	
+
 	public Long getMinimalInstanceCount() {
 		try {
 			return Long.parseLong(minimumInstanceCount.getText());
@@ -206,7 +205,7 @@ public class PropertiesPanel extends JPanel {
 			return 3L;
 		}
 	}
-	
+
 	public Properties createProperties() {
 		Properties properties = new Properties();
 		properties.setDataset(DeTrInGui.getInstance().getDataset());
@@ -215,14 +214,14 @@ public class PropertiesPanel extends JPanel {
 		properties.setStopCriterion(PropertiesPanel.getInstance().getStopCriterion());
 		properties.setPruningMethod(PropertiesPanel.getInstance().getPruningMethod());
 		properties.setMinimalInstanceCount(PropertiesPanel.getInstance().getMinimalInstanceCount());
-		propertiesOfCurrentTree = (Properties)properties.clone();
+		propertiesOfCurrentTree = (Properties) properties.clone();
 		return properties;
 	}
 
 	public void setPropertiesOfCurrentTree(Properties properties) {
 		propertiesOfCurrentTree = properties;
 	}
-	
+
 	public Properties getPropertiesOfCurrentTree() {
 		return propertiesOfCurrentTree;
 	}

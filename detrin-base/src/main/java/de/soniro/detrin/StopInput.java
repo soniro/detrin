@@ -12,11 +12,11 @@ import de.soniro.detrin.model.DecisionTree;
  */
 public class StopInput {
 	
-	Dataset trainingsset;
+	private Dataset trainingsset;
 	
-	Attribute<?> targetAttribute;
+	private Attribute<?> targetAttribute;
 	
-	DecisionTree tree;
+	private DecisionTree tree;
 	
 	public StopInput(Dataset trainingsset, Attribute<?> targetAttribute,
 			DecisionTree tree) {

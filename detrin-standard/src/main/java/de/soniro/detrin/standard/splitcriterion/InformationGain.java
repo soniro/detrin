@@ -21,8 +21,8 @@ import de.soniro.detrin.standard.Messages;
 
 /**
  * The Information Gain is a popular splitting criterion.
- * This is an Implementation of this criterion which writes detailled Explanations. 
- * 
+ * This is an Implementation of this criterion which writes detailled Explanations.
+ *
  * @author Nina Rothenberg
  */
 public class InformationGain implements SplitCriterion {
@@ -30,25 +30,25 @@ public class InformationGain implements SplitCriterion {
 	public static final String LABEL = Messages.getString("InformationGain.LABEL");
 
 	private String explanation = "";
-	
+
 	private Attribute<?> bestAttributeForSplit;
-	
+
 	private Double bestSplit;
-	
+
 	private Double information;
-	
+
 	private String explanationForValueEntropy;
-	
+
 	private List<ExplanationInfo> explanations = new ArrayList<ExplanationInfo>();
-	
-	
+
+
 	@Override
 	public Attribute<?> getBestAttributeForSplit(SplitInput input) {
 		explanation = "";
 		bestAttributeForSplit = null;
 		bestSplit = null;
 		information = null;
-		
+
 		validate(input.getTargetAttribute(), input.getAttributes());
 		for (Attribute<?> attribute : input.getAttributes()) {
 			Double informationGain = getInformationGain(input.getTrainingsset(), attribute, input.getTargetAttribute());
@@ -61,8 +61,8 @@ public class InformationGain implements SplitCriterion {
 			String bestSplitDetail = "";
 			String rest = "";
 			for (ExplanationInfo explanationInfo : explanations) {
-				if(explanationInfo.name.equals(bestAttributeForSplit.getName())) {
-					bestSplitDetail = explanationInfo.informationGainDetailedCalculation ;
+				if (explanationInfo.name.equals(bestAttributeForSplit.getName())) {
+					bestSplitDetail = explanationInfo.informationGainDetailedCalculation;
 				} else {
 					rest += Messages.getString("explanation.othersInformationGain", explanationInfo.name, explanationInfo.informationGainResult);
 				}
@@ -75,30 +75,30 @@ public class InformationGain implements SplitCriterion {
 		}
 		return bestAttributeForSplit;
 	}
-	
+
 	public Double getInformationGain(Dataset trainingsset, Attribute<?> attribute, Attribute<?> targetAttribute) {
 		ExplanationInfo explanationInfo = new ExplanationInfo();
 		explanationInfo.name = attribute.getName();
 		String entrophyForAttribute = "";
-		
+
 		Double informationGain = 0D;
 		Double entropyForAttribute = 0D;
 		if (information == null) information = calculateEntropy(targetAttribute, trainingsset);
-		
+
 		Map<String, Fraction> probabilitiesForAttributeValues = getProbabilitiesForAttributeValues(trainingsset, attribute);
 		boolean first = true;
 		String explanatioForAttributeEntropy = "";
-		for (String attributeValue : ((NominalAttribute)attribute).getPossibleValues()) {
+		for (String attributeValue : ((NominalAttribute) attribute).getPossibleValues()) {
 			if (first) {
 				explanatioForAttributeEntropy += Messages.getString("explanation.entropyValue", attribute.getName());
 				first = false;
 			} else {
 				explanatioForAttributeEntropy += " + ";
-			} 
+			}
 			explanationForValueEntropy = Messages.getString("explanation.entropyValue", attributeValue);
 			Fraction probability = probabilitiesForAttributeValues.get(attributeValue) == null ? Fraction.ZERO : probabilitiesForAttributeValues.get(attributeValue);
 			Double entropyForSubset = calculateEntropy(targetAttribute, trainingsset.getSubsetForAttributeValue(attribute, attributeValue));
-			entropyForAttribute += probability.doubleValue() * entropyForSubset; 
+			entropyForAttribute += probability.doubleValue() * entropyForSubset;
 			explanationForValueEntropy += Messages.getString("explanation.entropyResult", round(entropyForSubset));
 			explanatioForAttributeEntropy += Messages.getString("explanation.entropyPart", probability, entropyForSubset);
 			explanationInfo.informationGainDetailedCalculation += explanationForValueEntropy + "<br/>";
@@ -109,12 +109,13 @@ public class InformationGain implements SplitCriterion {
 		explanationInfo.informationGainDetailedCalculation += entrophyForAttribute;
 		informationGain = information - entropyForAttribute;
 		explanationInfo.informationGainDetailedCalculation += Messages.getString("explanation.informationGainInfo");
-		explanationInfo.informationGainDetailedCalculation += Messages.getString("explanation.informationGainStart", attribute.getName(), round(information), round(entropyForAttribute), round(informationGain));
+		explanationInfo.informationGainDetailedCalculation += Messages.getString("explanation.informationGainStart", attribute.getName(),
+				round(information), round(entropyForAttribute), round(informationGain));
 		explanationInfo.informationGainResult = round(informationGain);
 		explanations.add(explanationInfo);
 		return informationGain;
 	}
-	
+
 	public Double getInformationGain(Dataset trainingsset, NumericAttribute attribute, Attribute<?> targetAttribute) {
 		Double informationGain = 0D;
 		Double entropyForAttribute = 0D;
@@ -131,11 +132,11 @@ public class InformationGain implements SplitCriterion {
 		informationGain = information - entropyForAttribute;
 		return informationGain;
 	}
-	
+
 	public Double calculateEntropy(Attribute<?> targetAttribute, Dataset trainingsset) {
 		Double entropy = 0D;
-		Map<String, Fraction> probabilitiesForTargetValue = getProbabilitiesForAttributeValues(trainingsset, targetAttribute); 
-		for (String attributeValue : ((NominalAttribute)targetAttribute).getPossibleValues()) {
+		Map<String, Fraction> probabilitiesForTargetValue = getProbabilitiesForAttributeValues(trainingsset, targetAttribute);
+		for (String attributeValue : ((NominalAttribute) targetAttribute).getPossibleValues()) {
 			Fraction probability = probabilitiesForTargetValue.get(attributeValue) == null ? Fraction.ZERO : probabilitiesForTargetValue.get(attributeValue);
 			if (probability == Fraction.ZERO) continue;
 			entropy -= probability.doubleValue() * Math.log(probability.doubleValue()) / Math.log(2);
@@ -146,15 +147,15 @@ public class InformationGain implements SplitCriterion {
 
 	public Double calculateEntropy(NumericAttribute targetAttribute, Dataset trainingsset) {
 		Double entropy = 0D;
-		Map<Interval, Fraction> probabilitiesForTargetValue = getProbabilitiesForAttributeValues(trainingsset, targetAttribute); 
+		Map<Interval, Fraction> probabilitiesForTargetValue = getProbabilitiesForAttributeValues(trainingsset, targetAttribute);
 		for (Group<Double> interval : targetAttribute.getGroups()) {
 			Fraction probability = probabilitiesForTargetValue.get(interval) == null ? Fraction.ZERO : probabilitiesForTargetValue.get(interval);
 			if (probability == Fraction.ZERO) continue;
-			entropy -= probability.doubleValue() * Math.log(probability.doubleValue()) / Math.log(2); 
+			entropy -= probability.doubleValue() * Math.log(probability.doubleValue()) / Math.log(2);
 		}
 		return entropy;
 	}
-	
+
 	private void validate(Attribute<?> targetAttribute, List<Attribute<?>> attributes) {
 		if (!(targetAttribute instanceof NominalAttribute)) {
 			throw new RuntimeException(Messages.getString("InformationGain.NO_NOMINAL_TARGETATTRIBUTE"));
@@ -162,10 +163,10 @@ public class InformationGain implements SplitCriterion {
 		for (Attribute<?> attribute : attributes) {
 			if (!(attribute instanceof NominalAttribute)) {
 				attribute = ((NumericAttribute) attribute).toNominalAttribute();
-			}	
+			}
 		}
 	}
-	
+
 	private Map<String, Fraction> getProbabilitiesForAttributeValues(Dataset trainingsset, Attribute<?> attribute) {
 		Map<String, Fraction> probabilitiesForAttributeValues = new HashMap<String, Fraction>();
 		Map<String, Long> targetValueCount = new HashMap<String, Long>();
@@ -173,14 +174,14 @@ public class InformationGain implements SplitCriterion {
 			Long currentCount = targetValueCount.get(instance.getValueForAttribute(attribute));
 			if (currentCount == null) currentCount = 0L;
 			if (!(attribute instanceof NominalAttribute)) throw new RuntimeException(Messages.getString("InformationGain.INFORMATION_GAIN_JUST_WITH_NOMINAL"));
-			targetValueCount.put(instance.getValueForAttribute((NominalAttribute)attribute), currentCount + 1);
+			targetValueCount.put(instance.getValueForAttribute((NominalAttribute) attribute), currentCount + 1);
 		}
 		for (Entry<String, Long> entry : targetValueCount.entrySet()) {
 			probabilitiesForAttributeValues.put(entry.getKey(), new Fraction(entry.getValue(), Long.valueOf(trainingsset.size())));
 		}
 		return probabilitiesForAttributeValues;
 	}
-	
+
 	private Map<Interval, Fraction> getProbabilitiesForAttributeValues(Dataset trainingsset, NumericAttribute attribute) {
 		Map<Interval, Fraction> probabilitiesForAttributeValues = new HashMap<Interval, Fraction>();
 		Map<Interval, Long> targetValueCount = new HashMap<Interval, Long>();
@@ -189,7 +190,7 @@ public class InformationGain implements SplitCriterion {
 			Group<Double> currentInterval = attribute.getGroupForValue(value);
 			Long currentCount = targetValueCount.get(currentInterval);
 			if (currentCount == null) currentCount = 0L;
-			targetValueCount.put((Interval)currentInterval, currentCount + 1);
+			targetValueCount.put((Interval) currentInterval, currentCount + 1);
 		}
 		for (Entry<Interval, Long> entry : targetValueCount.entrySet()) {
 			probabilitiesForAttributeValues.put(entry.getKey(), new Fraction(entry.getValue(), Long.valueOf(trainingsset.size())));
@@ -206,17 +207,17 @@ public class InformationGain implements SplitCriterion {
 	public String getExplanation(Locale locale) {
 		return explanation;
 	}
-	
+
 	private String round(Double value) {
-		return String.valueOf(Math.round( value * 10000. ) / 10000.);
+		return String.valueOf(Math.round(value * 10000.) / 10000.);
 	}
-	
+
 	private class ExplanationInfo {
-		
+
 		public String name;
 		public String informationGainResult;
 		public String informationGainDetailedCalculation = "";
-		
+
 	}
 
 }

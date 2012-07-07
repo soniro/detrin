@@ -4,14 +4,14 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public class Messages {
+public final class Messages {
+
 	private static final String BUNDLE_NAME = "de.soniro.detrin.standard.messages";
 
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
-	private Messages() {
-	}
+	private Messages() { }
 
 	public static String getString(String key) {
 		try {

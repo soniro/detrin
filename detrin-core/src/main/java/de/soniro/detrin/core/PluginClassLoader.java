@@ -16,15 +16,15 @@ import java.util.jar.JarFile;
 
 /**
  * The Plugin-ClassLoader loads all classes in the pluginfolders and saves all implementing
- * classes for an interface-
- * 
+ * classes for an interface.
+ *
  * @author Nina Rothenberg
  *
  */
 public class PluginClassLoader extends URLClassLoader {
 
 	private Map<Class<?>, List<Class<?>>> classesForInterface = new HashMap<Class<?>, List<Class<?>>>();
-	
+
 	public PluginClassLoader(String... pluginFolder) {
 		super(getUrlsForJarsInPluginFolder(pluginFolder), ClassLoader.getSystemClassLoader());
 		initClassesForInterface();
@@ -48,12 +48,12 @@ public class PluginClassLoader extends URLClassLoader {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private void setClassesForInterface(JarFile jarFile) {
 		Enumeration<JarEntry> jarEntries = jarFile.entries();
-		while(jarEntries.hasMoreElements()) {
+		while (jarEntries.hasMoreElements()) {
 			JarEntry jarEntry = jarEntries.nextElement();
-			if(jarEntry.getName().endsWith(".class")) {
+			if (jarEntry.getName().endsWith(".class")) {
 				String classname = jarEntry.getName();
 				classname = classname.substring(0, classname.lastIndexOf("."));
 				classname = classname.replace(File.separator, ".");
@@ -73,8 +73,7 @@ public class PluginClassLoader extends URLClassLoader {
 			}
 		}
 	}
-		
-	@SuppressWarnings("unchecked")
+
 	public List<Class> loadClassesForInterface(Class searchedInterface) {
 		List<Class> result = new ArrayList<Class>();
 		if (classesForInterface.containsKey(searchedInterface)) {
@@ -84,17 +83,17 @@ public class PluginClassLoader extends URLClassLoader {
 		}
 		return result;
 	}
-	
+
 	private void initClassesForInterface() {
 		for (URL url : getURLs()) {
-			try {				
+			try {
 				setClassesForInterface(new JarFile(new File(url.toURI())));
 			} catch (URISyntaxException e) {
-					
+				// ignore
 			} catch (IOException e) {
-					
+				// ignore
 			}
 		}
 	}
-	
+
 }

@@ -16,7 +16,7 @@ public class NominalAttribute extends Attribute<String> {
 		NominalAttribute clone = new NominalAttribute(name);
 		clone.possibleValues.addAll(possibleValues);
 		for (Group<String> group : groups) {
-			clone.addGroup((NominalGroup)group.clone());
+			clone.addGroup((NominalGroup) group.clone());
 		}
 		clone.setGroupingType(groupingType);
 		clone.setActive(active);

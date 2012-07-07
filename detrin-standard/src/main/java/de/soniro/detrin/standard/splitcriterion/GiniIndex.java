@@ -15,16 +15,16 @@ import de.soniro.detrin.standard.Messages;
 /**
  * The Gini Gain is an popular splitting criterion.
  * This implementation offers explainations after calculating the best split.
- * 
+ *
  * @author Nina Rothenberg
  *
  */
 public class GiniIndex implements SplitCriterion {
 
 	public static final String LABEL = Messages.getString("GiniIndex.LABEL");
-	
+
 	private String explanation = "";
-	
+
 	@Override
 	public Attribute<?> getBestAttributeForSplit(SplitInput input) {
 		Attribute<?> bestAttributeForSplit = null;
@@ -37,21 +37,23 @@ public class GiniIndex implements SplitCriterion {
 				}
 				// TODO Not fully implemented yet!
 				// Group possible Values
-				for (List<String> group : ((NominalAttribute)attribute).getAllPossibleGroups(2)) {
+				for (List<String> group : ((NominalAttribute) attribute).getAllPossibleGroups(2)) {
 					// Calculate Gini-Index per group.
 					group.toString();
 				}
 				Double result = 0D;
-				for (String attributeValue : ((NominalAttribute)attribute).getPossibleValues()) {
-					result += probability(attribute, attributeValue, input.getTrainingsset()).doubleValue() * getGini(input.getTrainingsset().getSubsetForAttributeValue(attribute, attributeValue), input.getTargetAttribute());
+				for (String attributeValue : ((NominalAttribute) attribute).getPossibleValues()) {
+					result += probability(attribute, attributeValue,
+							input.getTrainingsset()).doubleValue() * getGini(input.getTrainingsset().getSubsetForAttributeValue(attribute, attributeValue), input.getTargetAttribute());
 				}
 				Double giniGain = gini - result;
 				giniGain.toString();
-				
+
 			}
 			Double result = 0D;
-			for (String attributeValue : ((NominalAttribute)attribute).getPossibleValues()) {
-				result += probability(attribute, attributeValue, input.getTrainingsset()).doubleValue() * getGini(input.getTrainingsset().getSubsetForAttributeValue(attribute, attributeValue), input.getTargetAttribute());
+			for (String attributeValue : ((NominalAttribute) attribute).getPossibleValues()) {
+				result += probability(attribute, attributeValue,
+						input.getTrainingsset()).doubleValue() * getGini(input.getTrainingsset().getSubsetForAttributeValue(attribute, attributeValue), input.getTargetAttribute());
 			}
 			explanation += Messages.getString("GiniIndex.INFO", attribute.getName(), round(gini));
 			Double giniGain = gini - result;
@@ -64,7 +66,7 @@ public class GiniIndex implements SplitCriterion {
 		explanation = "Bestes Attribut f&uuml;r den Split ist das Attribut '" + bestAttributeForSplit.getName() + "' mit einem Gini Gain von " + round(bestSplit) + ".<br/><br/>" + explanation;
 		return bestAttributeForSplit;
 	}
-	
+
 	private Fraction probability(Attribute<?> attribute, String value, Dataset trainingsset) {
 		Long valueInTrainingset = 0L;
 		for (Instance instance : trainingsset.getInstances()) {
@@ -74,10 +76,10 @@ public class GiniIndex implements SplitCriterion {
 		}
 		return new Fraction(valueInTrainingset, Long.valueOf(trainingsset.size()));
 	}
-	
+
 	private Double getGini(Dataset trainingsset, Attribute<?> attribute) {
 		Double result = 0D;
-		for (String attributeValue : ((NominalAttribute)attribute).getPossibleValues()) {
+		for (String attributeValue : ((NominalAttribute) attribute).getPossibleValues()) {
 			Fraction probability = probability(attribute, attributeValue, trainingsset);
 			result += Math.pow(probability.doubleValue(), 2);
 		}
@@ -93,9 +95,9 @@ public class GiniIndex implements SplitCriterion {
 	public String getExplanation(Locale locale) {
 		return explanation;
 	}
-	
+
 	private String round(Double value) {
-		return String.valueOf(Math.round( value * 10000. ) / 10000.);
+		return String.valueOf(Math.round(value * 10000.) / 10000.);
 	}
 
 }

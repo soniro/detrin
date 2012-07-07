@@ -19,14 +19,14 @@ import de.soniro.detrin.standard.Messages;
 
 /**
  * FileHandler for a CSV-Import.
- * 
+ *
  * @author Nina Rothenberg
  *
  */
 public class CsvFileHandler implements FileHandler {
 
 	public String[] attributes;
-	
+
 	@Override
 	public List<String> getHandableFileEndings() {
 		List<String> fileEndings = new ArrayList<String>();
@@ -55,7 +55,7 @@ public class CsvFileHandler implements FileHandler {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
+
 	private void createAttributes(String line, Dataset dataSet) {
 		String[] attributes = line.split(Messages.getString("CsvFileHandler.splitCharacter"));
 		for (String attributeName : attributes) {
@@ -65,7 +65,7 @@ public class CsvFileHandler implements FileHandler {
 			dataSet.addAttribute(new NumericAttribute(attributeName));
 		}
 	}
-	
+
 	private void createInstance(String line, Dataset dataSet) throws InvalidInstanceException {
 		Instance instance = new Instance();
 		String[] values = line.split(Messages.getString("CsvFileHandler.splitCharacter"));
@@ -76,7 +76,7 @@ public class CsvFileHandler implements FileHandler {
 				value = value.substring(1, value.length() - 1);
 			}
 			if (attribute instanceof NominalAttribute) {
-				((NominalAttribute)attribute).addPossibleValue(value);
+				((NominalAttribute) attribute).addPossibleValue(value);
 				instance.put(attribute, value);
 			} else if (attribute instanceof NumericAttribute) {
 				try {
@@ -84,7 +84,7 @@ public class CsvFileHandler implements FileHandler {
 					instance.put(attribute, value);
 				} catch (NumberFormatException e) {
 					attribute = ((NumericAttribute) attribute).toNominalAttribute();
-					((NominalAttribute)attribute).addPossibleValue(value);
+					((NominalAttribute) attribute).addPossibleValue(value);
 					instance.put(attribute, value);
 					dataSet.getAttributes().set(i, attribute);
 				}

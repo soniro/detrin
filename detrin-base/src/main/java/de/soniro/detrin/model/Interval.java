@@ -11,10 +11,10 @@ import java.util.Map.Entry;
  */
 public class Interval extends Group<Double> {
 	
-	Map<Double, Double> intervals = new HashMap<Double, Double>();
-	Map<Double, BorderType> otherIntervals = new HashMap<Double, BorderType>();
+	private Map<Double, Double> intervals = new HashMap<Double, Double>();
+	private Map<Double, BorderType> otherIntervals = new HashMap<Double, BorderType>();
 	
-	public Interval() {}
+	public Interval() { }
 	
 	public Interval(Double border, BorderType type) {
 		otherIntervals.put(border, type);
@@ -40,8 +40,8 @@ public class Interval extends Group<Double> {
 			}
 		}
 		for (Entry<Double, BorderType> interval : otherIntervals.entrySet()) {
-			if (interval.getValue().equals(BorderType.UPPER_BORDER) && interval.getKey() > value || 
-					interval.getValue().equals(BorderType.LOWER_BORDER) && interval.getKey() <= value) {
+			if (interval.getValue().equals(BorderType.UPPER_BORDER) && interval.getKey() > value 
+			        || interval.getValue().equals(BorderType.LOWER_BORDER) && interval.getKey() <= value) {
 				return true;
 			}
 		}

@@ -16,11 +16,11 @@ public class GroupingList<T> extends JList {
 	private static final long serialVersionUID = 8969177268233711980L;
 
 	private final DefaultListModel listModel;
-	
+
 	public GroupingList() {
 		this(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	}
-	
+
 	public GroupingList(int selectionMode) {
 		super(new DefaultListModel());
 		listModel = (DefaultListModel) getModel();
@@ -28,52 +28,52 @@ public class GroupingList<T> extends JList {
 		setBackground(Color.WHITE);
 		setSelectionMode(selectionMode);
 	}
-	
+
 	public void addItem(T item) {
 		listModel.addElement(item);
 	}
-	
+
 	public void addItems(Collection<T> items) {
 		for (T item : items) {
 			listModel.addElement(item);
 		}
 	}
-	
+
 	public void removeItem(T item) {
 		listModel.removeElement(item);
 	}
-	
+
 	public void removeItems(Collection<T> items) {
 		for (T item : items) {
 			listModel.removeElement(item);
 		}
 	}
-	
+
 	public void clear() {
 		listModel.removeAllElements();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public T getSelectedItem() {
 		return (T) getSelectedValue();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Set<T> getSelectedItems() {
 		Set<T> selectedValues = new HashSet<T>();
-		selectedValues.addAll((List<T>)Arrays.asList(getSelectedValues()));
+		selectedValues.addAll((List<T>) Arrays.asList(getSelectedValues()));
 		return selectedValues;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public Set<T> getAllItems() {
 		Set<T> allItems = new HashSet<T>();
-		for (int i = 0; i < listModel.size(); i++) { 
-			allItems.add((T)listModel.getElementAt(i));
+		for (int i = 0; i < listModel.size(); i++) {
+			allItems.add((T) listModel.getElementAt(i));
 		}
 		return allItems;
 	}
-	
+
 	public void moveItems(GroupingList<T> target, Collection<T> items) {
 		target.addItems(items);
 		removeItems(items);

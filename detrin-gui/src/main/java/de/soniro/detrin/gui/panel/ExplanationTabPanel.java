@@ -21,34 +21,35 @@ import javax.swing.text.html.StyleSheet;
 import de.soniro.detrin.Explainable;
 import de.soniro.detrin.gui.i18n.Messages;
 
-public class ExplanationTabPanel  extends ExplanationPanel {
+public final class ExplanationTabPanel  extends ExplanationPanel {
 
 	private static final long serialVersionUID = -8693116325521134543L;
 
-	final Map<Explainable, JComponent> treeComponentMap = new HashMap<Explainable, JComponent>();
-	final DraggableTabbedPane tabPane = new DraggableTabbedPane();
-	
+	private final Map<Explainable, JComponent> treeComponentMap = new HashMap<Explainable, JComponent>();
+	private final DraggableTabbedPane tabPane = new DraggableTabbedPane();
+
 	private static ExplanationTabPanel instance;
-	
+
 	public static ExplanationTabPanel getInstance() {
 		if (instance == null) {
 			instance = new ExplanationTabPanel();
 		}
 		return instance;
 	}
-	
+
 	private ExplanationTabPanel() {
 		super();
-		tabPane.setPreferredSize(new Dimension(1,1));
+		tabPane.setPreferredSize(new Dimension(1, 1));
 		setViewportView(tabPane);
 	}
-	
+
+	@Override
 	public void addComponent(String title, JComponent componente) {
 		tabPane.addTab(title, componente);
 		tabPane.setSelectedComponent(componente);
         tabPane.setTabComponentAt(tabPane.indexOfComponent(componente), createTabComponent(title));
 	}
-	
+
 	public JComponent createTabComponent(String title) {
 		JPanel panel = new JPanel();
         panel.setOpaque(false);
@@ -56,24 +57,24 @@ public class ExplanationTabPanel  extends ExplanationPanel {
 		panel.add(new TabButton(panel));
 		return panel;
 	}
-	
+
 	public void showExplanation(Explainable explainable, String title) {
 		String explanation = explainable.getExplanation(Messages.getInstance().getLocale());
 		JEditorPane textPane = new JEditorPane();
 		textPane.setEditable(false);
 		textPane.setContentType("text/html");
-		StyleSheet css = ((HTMLEditorKit)textPane.getEditorKit()).getStyleSheet();
+		StyleSheet css = ((HTMLEditorKit) textPane.getEditorKit()).getStyleSheet();
 		css.addRule("P { margin : 0; font-family : Arial, sans-serif; font-size : 10px; font-style : normal; }");
 		if (explanation == null) {
 			explanation = "Keine Erklärung vorhanden.";
 		}
 		textPane.setText("<p>" + explanation.replaceAll(System.getProperty("line.separator"), "<br/>") + "</p>");
 		JScrollPane scrollPane = new JScrollPane(textPane);
-		
+
 		addComponent(title.replace("&lt;", "<").replace("&gt;", ">"), scrollPane);
 		treeComponentMap.put(explainable, scrollPane);
 	}
-	
+
 	public void hideExplanation(Explainable explainable) {
 		JComponent component = treeComponentMap.remove(explainable);
 		removeComponent(component);
@@ -86,13 +87,13 @@ public class ExplanationTabPanel  extends ExplanationPanel {
 			tabPane.removeTabAt(index);
 		}
 	}
-	
+
     private class TabButton extends JButton implements ActionListener {
-    	
+
 		private static final long serialVersionUID = 3787914355556746720L;
-		
-		final JPanel panel;
-    	
+
+		private final JPanel panel;
+
         public TabButton(JPanel panel) {
         	super(new ImageIcon(TabButton.class.getResource("/images/close.png")));
         	this.panel = panel;

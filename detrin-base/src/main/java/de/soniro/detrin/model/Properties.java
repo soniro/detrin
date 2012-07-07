@@ -12,17 +12,17 @@ import de.soniro.detrin.StopCriterion;
  */
 public class Properties implements Cloneable {
 
-	Dataset dataset;
+	private Dataset dataset;
 
-	Attribute<?> targetAttribute;
+	private Attribute<?> targetAttribute;
 
-	SplitCriterion splitCriterion;
+	private SplitCriterion splitCriterion;
 
-	StopCriterion stopCriterion;
+	private StopCriterion stopCriterion;
 
-	PruningMethod pruningMethod;
+	private PruningMethod pruningMethod;
 
-	Long minimalInstanceCount;
+	private Long minimalInstanceCount;
 	
 	public Dataset getDataset() {
 		return dataset;
@@ -75,7 +75,7 @@ public class Properties implements Cloneable {
 	@Override
 	public Object clone() {
 		Properties clone = new Properties();
-		clone.setDataset((Dataset)dataset.clone());
+		clone.setDataset((Dataset) dataset.clone());
 		clone.setMinimalInstanceCount(minimalInstanceCount);
 		clone.setPruningMethod(pruningMethod);
 		clone.setSplitCriterion(splitCriterion);

@@ -4,15 +4,16 @@ import de.soniro.detrin.model.DecisionTree;
 
 public class TreeNode {
 
-	DecisionTree tree;
-	String label;
-	
+	private DecisionTree tree;
+	private String label;
+
 	public TreeNode(DecisionTree tree) {
 		this.tree = tree;
 	}
-	
+
+	@Override
 	public String toString() {
 		return tree.getLabel();
 	}
-	
+
 }

@@ -5,7 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import de.soniro.detrin.gui.DeTrInGui;
 
 public class AttributeTableModel extends DefaultTableModel {
-	
+
 	private static final long serialVersionUID = 8153117796927119922L;
 
 	@Override
@@ -21,13 +21,13 @@ public class AttributeTableModel extends DefaultTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if (columnIndex == 0) {
-			DeTrInGui.getInstance().updateActivateAttribute((Boolean)aValue, rowIndex);
+			DeTrInGui.getInstance().updateActivateAttribute((Boolean) aValue, rowIndex);
 		} else if (columnIndex == 3) {
 			// TODO
 		}
 		super.setValueAt(aValue, rowIndex, columnIndex);
 	}
-	
-	
-	
+
+
+
 }

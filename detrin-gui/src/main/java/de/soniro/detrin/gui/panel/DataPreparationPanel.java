@@ -24,19 +24,19 @@ import de.soniro.detrin.gui.listeners.ImportDatasetListener;
 import de.soniro.detrin.gui.tablemodel.AttributeTableModel;
 import de.soniro.detrin.gui.tablemodel.InstanceTableModel;
 import de.soniro.detrin.model.Attribute;
-import de.soniro.detrin.model.Dataset;
 import de.soniro.detrin.model.Attribute.GroupingType;
+import de.soniro.detrin.model.Dataset;
 
-public class DataPreparationPanel extends JTabbedPane {
+public final class DataPreparationPanel extends JTabbedPane {
 
 	private static final long serialVersionUID = 5548752870754486785L;
 
-	JScrollPane instances = new JScrollPane();
-	JScrollPane attributes = new JScrollPane();
+	private JScrollPane instances = new JScrollPane();
+	private JScrollPane attributes = new JScrollPane();
 
-	JTable attributeTable;
+	private JTable attributeTable;
 
-	AttributeTableModel attributeTableModel;
+	private AttributeTableModel attributeTableModel;
 
 	private static DataPreparationPanel instance;
 
@@ -76,11 +76,12 @@ public class DataPreparationPanel extends JTabbedPane {
 			dataVector[i][3] = attribute.getGroupingType();
 			dataVector[i][4] = attribute;
 		}
-		attributeTableModel.setDataVector(dataVector, new Object[] { 0, 1, 2,
+		attributeTableModel.setDataVector(dataVector, new Object[] {0, 1, 2,
 				"Gruppierung", "Gruppen" });
 		attributeTable = new JTable(attributeTableModel) {
 			private static final long serialVersionUID = -5113286652167065503L;
 
+			@Override
 			public void tableChanged(TableModelEvent e) {
 				super.tableChanged(e);
 				repaint();
@@ -127,9 +128,8 @@ public class DataPreparationPanel extends JTabbedPane {
 
 	class AttributeTableRenderer implements TableCellRenderer {
 
-		final Map<Integer, JComboBox> comboBoxes = new HashMap<Integer, JComboBox>();
+		private final Map<Integer, JComboBox> comboBoxes = new HashMap<Integer, JComboBox>();
 
-		@Override
 		public Component getTableCellRendererComponent(JTable table,
 				Object value, boolean isSelected, boolean hasFocus, int row,
 				int column) {
@@ -175,6 +175,7 @@ public class DataPreparationPanel extends JTabbedPane {
 			});
 		}
 
+		@Override
 		public Component getTableCellEditorComponent(JTable table,
 				Object value, boolean isSelected, int row, int column) {
 			if (isSelected) {
@@ -189,6 +190,7 @@ public class DataPreparationPanel extends JTabbedPane {
 			return button;
 		}
 
+		@Override
 		public Object getCellEditorValue() {
 			if (isPushed) {
 				new GroupingPopup(attribute);
@@ -197,11 +199,13 @@ public class DataPreparationPanel extends JTabbedPane {
 			return attribute;
 		}
 
+		@Override
 		public boolean stopCellEditing() {
 			isPushed = false;
 			return super.stopCellEditing();
 		}
 
+		@Override
 		protected void fireEditingStopped() {
 			super.fireEditingStopped();
 		}

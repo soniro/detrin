@@ -26,21 +26,20 @@ import de.soniro.detrin.model.Dataset;
 
 /**
  * The file import listener.
- * 
+ *
  * @author Nina Rothenberg
  */
 public class ImportDatasetListener implements ActionListener {
 
-	private static Log LOGGER = LogFactory.getLog(ImportDatasetListener.class);
-	
-	Map<String, List<FileHandler>> fileHandler;
-	JFileChooser fileChooser;
-	
-	@Override
+	private static final Log LOGGER = LogFactory.getLog(ImportDatasetListener.class);
+
+	private Map<String, List<FileHandler>> fileHandler;
+	private JFileChooser fileChooser;
+
 	public void actionPerformed(ActionEvent arg0) {
 		importFile();
 	}
-	
+
 	public void importFile() {
 		if (fileHandler == null) {
 			fileHandler = new HashMap<String, List<FileHandler>>();
@@ -72,7 +71,7 @@ public class ImportDatasetListener implements ActionListener {
 			}
 		}
 	}
-	
+
 	private void handleFile(FileHandler fileHandler) {
 		try {
 			Dataset dataset = fileHandler.handleFile(fileChooser.getSelectedFile());
@@ -88,11 +87,11 @@ public class ImportDatasetListener implements ActionListener {
 		for (FileHandler currentFileHandler : fileHandler) {
 			fileHandlerForOptionPane.add(new OptionPaneInput<FileHandler>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
 		}
-		FileHandler selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE, 
+		FileHandler selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE,
 				Message.SELECT_FILE_HANDLER_MESSAGE, fileHandlerForOptionPane, fileHandlerForOptionPane.get(0)).getValue();
 		handleFile(selectedFileHandler);
 	}
-	
+
 	class ImportFileFilter extends FileFilter {
 
 			@Override
@@ -116,5 +115,5 @@ public class ImportDatasetListener implements ActionListener {
 				return f.isDirectory();
 			}
 	}
-	
+
 }

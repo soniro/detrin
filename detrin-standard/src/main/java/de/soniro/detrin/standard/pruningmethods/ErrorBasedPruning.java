@@ -25,10 +25,11 @@ public class ErrorBasedPruning implements PruningMethod {
 		Attribute<?> targetAttribute = pruningInput.getTargetAttribute();
 		if (decisionTree instanceof Leaf || trainingsset.size() < 1) return decisionTree;
 		DecisionTree prunedDecisionTree = new Leaf(targetAttribute, getMostLikelyLeafValue(decisionTree, trainingsset, targetAttribute));
-		Branch maxChild = getMaxChild((Node)decisionTree); 
+		Branch maxChild = getMaxChild((Node) decisionTree);
 		Double upperBoundForSubtree = getUpperBoundOfConfidenceInterval(decisionTree, testset, targetAttribute);
 		Double upperBoundForPrunedSubtree = getUpperBoundOfConfidenceInterval(decisionTree, testset, targetAttribute);
-		Double upperBoundForMaxChild = getUpperBoundOfConfidenceInterval(maxChild.getChild(), testset.getSubsetForAttributeValue(decisionTree.getAttribute(), maxChild.getLabel(null)), targetAttribute);
+		Double upperBoundForMaxChild = getUpperBoundOfConfidenceInterval(maxChild.getChild(), testset.getSubsetForAttributeValue(decisionTree.getAttribute(),
+				maxChild.getLabel(null)), targetAttribute);
 		/*
 		 * Pruned tree has lowest error rate.
 		 */
@@ -36,13 +37,13 @@ public class ErrorBasedPruning implements PruningMethod {
 			decisionTree = prunedDecisionTree;
 			String newExplanation;
 			if (upperBoundForMaxChild == upperBoundForSubtree) {
-				newExplanation = "Der vorherige Baum wurde an dieser Stelle auf das Blatt " + decisionTree.getLabel() + 
-				" gekürzt, weil mit diesem Blatt die Fehlerrate gleich ist.\nFehlerrate vorheriger Baum: " + upperBoundForSubtree +
-				"\nFehlerrate des Blattes: " + upperBoundForPrunedSubtree;
+				newExplanation = "Der vorherige Baum wurde an dieser Stelle auf das Blatt " + decisionTree.getLabel()
+						+ " gekürzt, weil mit diesem Blatt die Fehlerrate gleich ist.\nFehlerrate vorheriger Baum: " + upperBoundForSubtree
+						+ "\nFehlerrate des Blattes: " + upperBoundForPrunedSubtree;
 			} else {
-				newExplanation = "Der vorherige Baum wurde an dieser Stelle auf das Blatt " + decisionTree.getLabel() + 
-				" gekürzt, weil mit diesem Blatt die Fehlerrate gleich ist und somit der Baum ohne Qualitätsverlust vereinfacht werden kann.\nFehlerrate: " + 
-				upperBoundForSubtree;
+				newExplanation = "Der vorherige Baum wurde an dieser Stelle auf das Blatt " + decisionTree.getLabel()
+						+ " gekürzt, weil mit diesem Blatt die Fehlerrate gleich ist und somit der Baum ohne Qualitätsverlust vereinfacht werden kann.\nFehlerrate: "
+						+ upperBoundForSubtree;
 			}
 			decisionTree.setExplanation(newExplanation);
 		/*
@@ -53,18 +54,18 @@ public class ErrorBasedPruning implements PruningMethod {
 			String currentExplanation = maxChild.getExplanation(null);
 			String newExplanation;
 			if (upperBoundForMaxChild == upperBoundForSubtree) {
-				newExplanation = "Der vorherige Baum wurde an dieser Stelle durch den wahrscheinlichsten Kindknoten " + decisionTree.getLabel() + 
-				" ersetzt, weil bei diesem die Fehlerrate gleich ist und somit der Baum ohne Qualitätsverlust vereinfacht werden kann.\nFehlerrate: " + 
-				upperBoundForSubtree;
+				newExplanation = "Der vorherige Baum wurde an dieser Stelle durch den wahrscheinlichsten Kindknoten " + decisionTree.getLabel()
+						+ " ersetzt, weil bei diesem die Fehlerrate gleich ist und somit der Baum ohne Qualitätsverlust vereinfacht werden kann.\nFehlerrate: "
+						+ upperBoundForSubtree;
 			} else {
-				newExplanation = "Der vorherige Baum wurde an dieser Stelle durch den wahrscheinlichsten Kindknoten " + decisionTree.getLabel() + 
-				" ersetzt, weil bei diesem die Fehlerrate kleiner ist.\nFehlerrate vorheriger Baum: " + upperBoundForSubtree +
-				"\nFehlerrate des Kindes: " + upperBoundForMaxChild;
+				newExplanation = "Der vorherige Baum wurde an dieser Stelle durch den wahrscheinlichsten Kindknoten " + decisionTree.getLabel()
+						+ " ersetzt, weil bei diesem die Fehlerrate kleiner ist.\nFehlerrate vorheriger Baum: " + upperBoundForSubtree
+						+ "\nFehlerrate des Kindes: " + upperBoundForMaxChild;
 			}
 			decisionTree.setExplanation(newExplanation + "\n\n" + currentExplanation);
 		}
 		if (decisionTree instanceof Node) {
-			for (Branch branch : ((Node)decisionTree).getBranches()) {
+			for (Branch branch : ((Node) decisionTree).getBranches()) {
 				PruningInput newPruningInput = new PruningInput();
 				newPruningInput.setDecisionTree(branch.getChild());
 				newPruningInput.setTrainingsset(trainingsset.getSubsetForAttributeValue(decisionTree.getAttribute(), branch.getLabel(null)));
@@ -75,7 +76,7 @@ public class ErrorBasedPruning implements PruningMethod {
 		}
 		return decisionTree;
 	}
-	
+
 	private Branch getMaxChild(Node decisionTree) {
 		Branch maxChild = null;
 		int maxChildSize = 0;
@@ -87,7 +88,7 @@ public class ErrorBasedPruning implements PruningMethod {
 		}
 		return maxChild;
 	}
-	
+
 	public String getMostLikelyLeafValue(DecisionTree decisionTree, Dataset dataset, Attribute<?> targetAttribute) {
 		Map<String, Integer> instanceCount = new HashMap<String, Integer>();
 		for (Instance instance : dataset.getInstances()) {
@@ -106,14 +107,14 @@ public class ErrorBasedPruning implements PruningMethod {
 		}
 		return mostLikelyLeaf;
 	}
-	
+
 	private Double getUpperBoundOfConfidenceInterval(DecisionTree decisionTree, Dataset testset, Attribute<?> targetAttribute) {
 		Double misclassificationRate = getMisclassificationRate(decisionTree, testset, targetAttribute);
 		Double sqrt = Math.sqrt((misclassificationRate * (1 - misclassificationRate)) / testset.size());
 		Double z = 1D;
 		return misclassificationRate + (z * sqrt);
 	}
-	
+
 	private Double getMisclassificationRate(DecisionTree decisionTree, Dataset testset, Attribute<?> targetAttribute) {
 		int numberOfFalseClassifications = 0;
 		for (Instance instance : testset.getInstances()) {

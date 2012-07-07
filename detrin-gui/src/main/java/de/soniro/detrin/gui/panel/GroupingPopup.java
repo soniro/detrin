@@ -10,7 +10,7 @@ import de.soniro.detrin.model.NumericAttribute;
 
 /**
  * Opens the right grouping popup for the attribute.
- * 
+ *
  * @author Nina Rothenberg
  */
 public class GroupingPopup extends JDialog {
@@ -21,17 +21,15 @@ public class GroupingPopup extends JDialog {
 		super(DeTrInGui.getInstance(), "Gruppieren des Attributes " + attribute.getName());
 		init(attribute);
 	}
-	
+
 	private void init(Attribute<?> attribute) {
-		setBounds((getOwner().getWidth() / 2) - 250, (getOwner().getHeight() /2) - 200, 500, 400);
+		setBounds((getOwner().getWidth() / 2) - 250, (getOwner().getHeight() / 2) - 200, 500, 400);
 		AttributeVisitor attributeVisitor = new AttributeVisitor() {
-			
-			@Override
+
 			public void visit(NumericAttribute numericAttribute) {
 				throw new RuntimeException("Not implemented yet!");
 			}
-			
-			@Override
+
 			public void visit(NominalAttribute nominalAttribute) {
 				add(new GroupingPanel(GroupingPopup.this, nominalAttribute));
 				setVisible(true);
@@ -39,5 +37,5 @@ public class GroupingPopup extends JDialog {
 		};
 		attribute.accept(attributeVisitor);
 	}
-	
+
 }

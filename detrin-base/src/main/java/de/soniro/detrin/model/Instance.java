@@ -5,18 +5,18 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 /**
- * An instance maps the values to the attributes 
+ * An instance maps the values to the attributes.
  * 
  * @author Nina Rothenberg
  *
  */
-public class Instance extends HashMap<Attribute<?>, Object>{
+public class Instance extends HashMap<Attribute<?>, Object> {
 
 	private static final long serialVersionUID = -8984097859628159102L;
 
 	@SuppressWarnings("unchecked")
 	public <T>T getValueForAttribute(Attribute<T> attribute) {
-		return (T)get(attribute);
+		return (T) get(attribute);
 	}
 	
 	public Set<Attribute<?>> getAttributes() {

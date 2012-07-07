@@ -26,27 +26,27 @@ import de.soniro.detrin.model.DecisionTree;
 
 /**
  * The MainPanel of DeTrIn.
- * 
+ *
  * @author Nina Rothenberg
  */
-public class DeTrInGui extends JFrame {
-	
+public final class DeTrInGui extends JFrame {
+
 	private static final long serialVersionUID = 8066978368739318601L;
 
 	private static final Log LOGGER = LogFactory.getLog(DeTrInGui.class);
-	
-	public static final DecisionTreeInducer detrin = new DecisionTreeInducer();
+
+	public static final DecisionTreeInducer DETRIN = new DecisionTreeInducer();
 
 	private final List<DecisionTree> tree = new ArrayList<DecisionTree>();
 	private int currentTree = 0;
 	private Dataset dataset;
 
 	private DeTrInMenuBar menu;
-	
+
 	private JSplitPane mainSplit;
 	private JSplitPane attributesAndProperties;
 	private JSplitPane decisionTreeAndExplanation;
-	
+
 	private static DeTrInGui instance;
 
 	public static DeTrInGui getInstance() {
@@ -55,17 +55,17 @@ public class DeTrInGui extends JFrame {
 		}
 		return instance;
 	}
-	
+
 	private DeTrInGui() {
 		super();
 		updateTitle();
 		createGui();
 	}
-	
+
 	private void createGui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/images/icon.png")));
-		
+
 		attributesAndProperties = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, DataPreparationPanel.getInstance(), PropertiesPanel.getInstance());
 		attributesAndProperties.setOneTouchExpandable(true);
 		decisionTreeAndExplanation = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, DecisionTreePanel.getInstance(), ExplanationTabPanel.getInstance());
@@ -88,24 +88,24 @@ public class DeTrInGui extends JFrame {
 		DataPreparationPanel.getInstance().updateLabels();
 		PropertiesPanel.getInstance().updateLabels();
 	}
-	
+
 	private void updateTitle() {
 		setTitle(Messages.getInstance().getLabel(Message.TITLE));
 	}
-	
+
 	public void updateDataset(Dataset dataset) {
 		this.dataset = dataset;
 		DataPreparationPanel.getInstance().updatePanel(dataset);
 		PropertiesPanel.getInstance().updateTargetAttribute(dataset);
 	}
-	
+
 	public void updateTree(DecisionTree decisionTree) {
 		tree.add(decisionTree);
 		currentTree = tree.indexOf(decisionTree);
 		DecisionTreePanel.getInstance().updateTree(new DecisionTreeToTree()
 				.mapDecisionTreeToDelegateTree(decisionTree));
 	}
-	
+
 	public Dataset getDataset() {
 		return dataset;
 	}
@@ -119,5 +119,5 @@ public class DeTrInGui extends JFrame {
 		LOGGER.info(Messages.getInstance().getLabel(Message.ATTRIBUTE_IS_ACTIVE, attribute, activate));
 		attribute.setActive(activate);
 	}
-	
+
 }

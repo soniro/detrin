@@ -28,7 +28,7 @@ public class NumericAttribute extends Attribute<Double> {
 		NumericAttribute clone = new NumericAttribute(name);
 		clone.possibleValues.addAll(possibleValues);
 		for (Group<Double> group : groups) {
-			clone.addGroup((Interval)group.clone());
+			clone.addGroup((Interval) group.clone());
 		}
 		clone.setGroupingType(groupingType);
 		clone.setActive(active);

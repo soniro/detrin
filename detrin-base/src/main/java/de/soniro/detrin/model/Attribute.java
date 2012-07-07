@@ -14,15 +14,15 @@ import java.util.Set;
  */
 public abstract class Attribute<T> implements Cloneable {
 
-	String name;
+	protected String name;
 
-	Set<T> possibleValues = new HashSet<T>();
+	protected Set<T> possibleValues = new HashSet<T>();
 	
-	Set<Group<T>> groups = new HashSet<Group<T>>();
+	protected Set<Group<T>> groups = new HashSet<Group<T>>();
 	
-	GroupingType groupingType = GroupingType.NONE;
+	protected GroupingType groupingType = GroupingType.NONE;
 	
-	boolean active = true;
+	protected boolean active = true;
 	
 	public Attribute(String name) {
 		this.name = name;
@@ -68,7 +68,7 @@ public abstract class Attribute<T> implements Cloneable {
 	public List<List<T>> getAllPossibleGroups(int numberOfGroups) {
 		List<List<T>> groups = new ArrayList<List<T>>();
 		for (int i = 0; i < possibleValues.size(); i++) {
-			// Alle möglichen Teilgruppen ermitteln und Eintrag in Liste schreiben.
+			// TODO: Alle möglichen Teilgruppen ermitteln und Eintrag in Liste schreiben.
 		}
 		return groups;
 	}
@@ -99,7 +99,7 @@ public abstract class Attribute<T> implements Cloneable {
 		MANUAL("Manuell"),
 		AUTOMATIC("Automatisch");
 		
-		String label;
+		private String label;
 		
 		private GroupingType(String label) {
 			this.label = label;

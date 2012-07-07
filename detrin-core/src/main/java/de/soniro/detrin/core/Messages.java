@@ -6,16 +6,16 @@ import java.util.ResourceBundle;
 
 /**
  * Messages to return the correct string out of the messages.properties.
- * 
+ *
  * @author Nina Rothenberg
  *
  */
-public class Messages {
-	
+public final class Messages {
+
 	private static final String BUNDLE_NAME = "de.soniro.detrin.core.messages.explanations";
 
 	public static final String TOO_FEW_INSTANCES = Messages.getString("DecisionTreeInducer.TOO_FEW_INSTANCES");
-	
+
 	public static final String NUMBER_INSTANCES_BRANCH = Messages.getString("DecisionTreeInducer.NUMBER_INSTANCES_BRANCH");
 
 	private Messages() {

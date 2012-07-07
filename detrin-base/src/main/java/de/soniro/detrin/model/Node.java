@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Node extends DecisionTree {
 
-	List<Branch> branches = new ArrayList<Branch>();
+	private List<Branch> branches = new ArrayList<Branch>();
 
 	public Node(Attribute<?> attribute) {
 		super(attribute);
@@ -54,7 +54,7 @@ public class Node extends DecisionTree {
 		for (Branch branch : branches) {
 			if (attribute instanceof NominalAttribute && branch.getLabel(null).equals(branchValue)) {
 				return branch.getChild().classify(instance);
-			} else if (attribute instanceof NumericAttribute && branch.getLabel(null).equals(((NumericAttribute)attribute).getGroupForValue(Double.valueOf(branchValue)).toString())) {
+			} else if (attribute instanceof NumericAttribute && branch.getLabel(null).equals(((NumericAttribute) attribute).getGroupForValue(Double.valueOf(branchValue)).toString())) {
 				return branch.getChild().classify(instance);
 			}
 		}

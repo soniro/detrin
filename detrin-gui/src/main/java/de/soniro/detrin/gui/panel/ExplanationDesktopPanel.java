@@ -8,16 +8,17 @@ public class ExplanationDesktopPanel extends ExplanationPanel {
 
 	private static final long serialVersionUID = -4248287273955667406L;
 
-	final JDesktopPane desktopPane = new JDesktopPane();
-	
+	private final JDesktopPane desktopPane = new JDesktopPane();
+
 	public ExplanationDesktopPanel() {
 		super();
 		setViewportView(desktopPane);
 	}
-	
+
+	@Override
 	public void addComponent(String title, JComponent componente) {
 		JInternalFrame iFrame = new JInternalFrame(title, true, true, true, true);
-        iFrame.setSize(100,100);
+        iFrame.setSize(100, 100);
         iFrame.setVisible(true);
         iFrame.add(componente);
 		desktopPane.add(iFrame);
@@ -27,5 +28,5 @@ public class ExplanationDesktopPanel extends ExplanationPanel {
 	public void removeComponent(JComponent componente) {
 		desktopPane.remove(componente);
 	}
-	
+
 }

@@ -8,7 +8,7 @@ package de.soniro.detrin.model;
  */
 public class Leaf extends DecisionTree {
 
-	String label;
+	private String label;
 	
 	public Leaf(Attribute<?> attribute, String label) {
 		super(attribute);

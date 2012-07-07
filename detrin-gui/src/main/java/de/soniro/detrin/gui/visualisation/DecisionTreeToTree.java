@@ -19,7 +19,6 @@ public class DecisionTreeToTree implements DecisionTreeVisitor {
 		return tree;
 	}
 
-	@Override
 	public void visit(Node node) {
 		for (Branch branch : node.getBranches()) {
 			tree.addEdge(branch, node, branch.getChild());
@@ -27,7 +26,6 @@ public class DecisionTreeToTree implements DecisionTreeVisitor {
 		}
 	}
 
-	@Override
 	public void visit(Leaf leaf) {
 		// Do nothing
 	}

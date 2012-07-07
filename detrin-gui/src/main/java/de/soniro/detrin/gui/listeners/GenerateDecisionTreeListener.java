@@ -20,8 +20,7 @@ import de.soniro.detrin.model.Properties;
  * @author Nina Rothenberg
  */
 public class GenerateDecisionTreeListener implements ActionListener {
-
-	@Override
+	
 	public void actionPerformed(ActionEvent arg0) {
 		DecisionTreePanel.getInstance().showLoading();
 		Thread thread = new Thread() {

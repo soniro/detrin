@@ -13,9 +13,9 @@ import de.soniro.detrin.model.Dataset;
  */
 public class SplitInput {
 
-	Dataset trainingsset;
-	List<Attribute<?>> attributes;
-	Attribute<?> targetAttribute;
+	private Dataset trainingsset;
+	private List<Attribute<?>> attributes;
+	private Attribute<?> targetAttribute;
 	
 	public SplitInput(Dataset trainingsset, List<Attribute<?>> attributes, Attribute<?> targetAttribute) {
 		this.trainingsset = trainingsset;

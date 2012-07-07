@@ -27,18 +27,17 @@ import de.soniro.detrin.gui.panel.PropertiesPanel;
 
 /**
  * The file import listener.
- * 
+ *
  * @author Nina Rothenberg
  */
 public class ExportReportListener implements ActionListener {
 
-	private static Log LOGGER = LogFactory.getLog(ExportReportListener.class);
-	
-	JFileChooser fileChooser;
-	
-	Map<String, List<FileExport>> fileHandler;
-	
-	@Override
+	private static final Log LOGGER = LogFactory.getLog(ExportReportListener.class);
+
+	private JFileChooser fileChooser;
+
+	private Map<String, List<FileExport>> fileHandler;
+
 	public void actionPerformed(ActionEvent arg0) {
 		if (fileHandler == null) {
 			initFileHandlers();
@@ -46,7 +45,7 @@ public class ExportReportListener implements ActionListener {
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new ExportFileFilter());
 		int returnVal = fileChooser.showSaveDialog(DeTrInGui.getInstance());
-		
+
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			String[] splits = fileChooser.getSelectedFile().getName().split("\\.");
 			if (splits.length == 0)	return;
@@ -59,22 +58,22 @@ public class ExportReportListener implements ActionListener {
 			}
 		}
 	}
-	
+
 	private void chooseFileExport(List<FileExport> fileHandler) {
 		List<OptionPaneInput<FileExport>> fileHandlerForOptionPane = new ArrayList<OptionPaneInput<FileExport>>();
 		for (FileExport currentFileHandler : fileHandler) {
 			fileHandlerForOptionPane.add(new OptionPaneInput<FileExport>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
 		}
-		FileExport selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE, 
+		FileExport selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE,
 				Message.SELECT_FILE_HANDLER_MESSAGE, fileHandlerForOptionPane, fileHandlerForOptionPane.get(0)).getValue();
 		handleFile(selectedFileHandler);
 	}
-	
+
 	private void handleFile(FileExport fileHandler) {
 		BufferedImage image = DecisionTreePanel.getInstance().getImageForExport();
 		fileHandler.writeReport(fileChooser.getSelectedFile(), DeTrInGui.getInstance().getCurrentTree(), PropertiesPanel.getInstance().getPropertiesOfCurrentTree(), image, null);
 	}
-	
+
 	private void initFileHandlers() {
 		fileHandler = new HashMap<String, List<FileExport>>();
 		List<FileExport> fileHandlerList = new DecisionTreeInducer().getAllPossibleInstances(FileExport.class);
@@ -87,7 +86,7 @@ public class ExportReportListener implements ActionListener {
 			LOGGER.debug(Messages.getInstance().getLabel(Message.ADD_FILE_HANDLER, fileEnding, fileHandler.get(fileEnding).size()));
 		}
 	}
-	
+
 	class ExportFileFilter extends FileFilter {
 
 		@Override

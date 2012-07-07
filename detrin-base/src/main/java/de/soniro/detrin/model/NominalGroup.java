@@ -10,9 +10,9 @@ import java.util.Set;
  */
 public class NominalGroup extends Group<String> {
 	
-	Set<String> valuesInGroup = new HashSet<String>(); 
+	private Set<String> valuesInGroup = new HashSet<String>(); 
 
-	String name;
+	private String name;
 	
 	public NominalGroup(String name) {
 		super();

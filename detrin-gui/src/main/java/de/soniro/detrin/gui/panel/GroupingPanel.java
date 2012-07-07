@@ -24,47 +24,46 @@ import de.soniro.detrin.model.NominalAttribute;
 import de.soniro.detrin.model.NominalGroup;
 
 public class GroupingPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 7917101252798123412L;
-	
-	private static final JButton addGroup = new JButton(new ImageIcon(GroupingPanel.class.getResource("/images/add.png")));
-	private static final JButton deleteGroups = new JButton(new ImageIcon(GroupingPanel.class.getResource("/images/close.png")));
-	private static final JButton allToGroup = new JButton("<<");
-	private static final JButton selectedToGroup = new JButton("<");
-	private static final JButton selectedToPool = new JButton(">");
-	private static final JButton allToPool = new JButton(">>");
-	private static final JButton speichernButton = new JButton("Gruppierung");
+
+	private static final JButton ADD_GROUP = new JButton(new ImageIcon(GroupingPanel.class.getResource("/images/add.png")));
+	private static final JButton DELETE_GROUPS = new JButton(new ImageIcon(GroupingPanel.class.getResource("/images/close.png")));
+	private static final JButton ALL_TO_GROUP = new JButton("<<");
+	private static final JButton SELECTED_TO_GROUP = new JButton("<");
+	private static final JButton SELECTED_TO_POOL = new JButton(">");
+	private static final JButton ALL_TO_POOL = new JButton(">>");
+	private static final JButton SAVE_BUTTON = new JButton("Gruppierung");
 
 	private final GroupingList<Group<String>> groups = new GroupingList<Group<String>>(ListSelectionModel.SINGLE_SELECTION);
 
 	private final GroupingList<String> valuesInGroup = new GroupingList<String>();
 
 	private final GroupingList<String> valuesInPool = new GroupingList<String>();
-	
+
 	private final JDialog parent;
 
 	private NominalAttribute attribute;
-	
+
 	public GroupingPanel(JDialog parent, NominalAttribute attribute) {
 		super();
 		this.attribute = attribute;
 		this.parent = parent;
 		groups.addItems(this.attribute.getGroups());
 		groups.addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
+
 			public void valueChanged(ListSelectionEvent e) {
-				NominalGroup group = (NominalGroup)groups.getSelectedItem();
+				NominalGroup group = (NominalGroup) groups.getSelectedItem();
 				valuesInGroup.clear();
 				valuesInGroup.addItems(group.getValues());
 			}
 		});
-		valuesInPool.addItems(getValuesWithoutGroup());	
+		valuesInPool.addItems(getValuesWithoutGroup());
 		setSize(500, 400);
 		setLayout(new GridBagLayout());
 		initPanel();
 	}
-	
+
 	private Set<String> getValuesWithoutGroup() {
 		Set<String> valuesWithoutGroup = new HashSet<String>(attribute.getPossibleValues());
 		for (Group<String> group : attribute.getGroups()) {
@@ -72,13 +71,12 @@ public class GroupingPanel extends JPanel {
 		}
 		return valuesWithoutGroup;
 	}
-	
+
 	private void initPanel() {
-		addGroup.addActionListener(new ActionListener() {
-			
-			@Override
+		ADD_GROUP.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				String groupName = (String)JOptionPane.showInputDialog(
+				String groupName = JOptionPane.showInputDialog(
 	                    GroupingPanel.this,
 	                    "Name der Gruppe:",
 	                    "Gruppe hinzufügen",
@@ -89,9 +87,8 @@ public class GroupingPanel extends JPanel {
 				groups.setSelectedValue(group, true);
 			}
 		});
-		deleteGroups.addActionListener(new ActionListener() {
-			
-			@Override
+		DELETE_GROUPS.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				Set<Group<String>> selectedGroups = groups.getSelectedItems();
 				for (Group<String> group : selectedGroups) {
@@ -101,37 +98,33 @@ public class GroupingPanel extends JPanel {
 				}
 			}
 		});
-		selectedToGroup.setPreferredSize(allToGroup.getPreferredSize());
-		selectedToPool.setPreferredSize(allToPool.getPreferredSize());
-		allToGroup.addActionListener(new ActionListener() {
-			
-			@Override
+		SELECTED_TO_GROUP.setPreferredSize(ALL_TO_GROUP.getPreferredSize());
+		SELECTED_TO_POOL.setPreferredSize(ALL_TO_POOL.getPreferredSize());
+		ALL_TO_GROUP.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				((NominalGroup)groups.getSelectedItem()).getValues().addAll(valuesInPool.getAllItems());
+				((NominalGroup) groups.getSelectedItem()).getValues().addAll(valuesInPool.getAllItems());
 				valuesInPool.moveItems(valuesInGroup, valuesInPool.getAllItems());
 			}
 		});
-		selectedToGroup.addActionListener(new ActionListener() {
-			
-			@Override
+		SELECTED_TO_GROUP.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				((NominalGroup)groups.getSelectedItem()).getValues().addAll(valuesInPool.getSelectedItems());
+				((NominalGroup) groups.getSelectedItem()).getValues().addAll(valuesInPool.getSelectedItems());
 				valuesInPool.moveItems(valuesInGroup, valuesInPool.getSelectedItems());
 			}
 		});
-		selectedToPool.addActionListener(new ActionListener() {
-			
-			@Override
+		SELECTED_TO_POOL.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				((NominalGroup)groups.getSelectedItem()).getValues().removeAll(valuesInGroup.getSelectedItems());
+				((NominalGroup) groups.getSelectedItem()).getValues().removeAll(valuesInGroup.getSelectedItems());
 				valuesInGroup.moveItems(valuesInPool, valuesInGroup.getSelectedItems());
 			}
 		});
-		allToPool.addActionListener(new ActionListener() {
-			
-			@Override
+		ALL_TO_POOL.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				((NominalGroup)groups.getSelectedItem()).getValues().removeAll(valuesInGroup.getAllItems());
+				((NominalGroup) groups.getSelectedItem()).getValues().removeAll(valuesInGroup.getAllItems());
 				valuesInGroup.moveItems(valuesInPool, valuesInGroup.getAllItems());
 			}
 		});
@@ -143,27 +136,26 @@ public class GroupingPanel extends JPanel {
 		valuesInPoolPanel.setSize(100, 150);
 		add(new JLabel("Gruppen"), createGridBagConstraint(0, 0));
 		add(groupPanel, createGridBagConstraint(0, 1, 1, 2));
-		add(addGroup, createGridBagConstraint(1, 1));
-		add(deleteGroups, createGridBagConstraint(1, 2));
+		add(ADD_GROUP, createGridBagConstraint(1, 1));
+		add(DELETE_GROUPS, createGridBagConstraint(1, 2));
 		add(new JLabel("Werte der aktuellen Gruppe"), createGridBagConstraint(0, 3));
 		add(valuesInGroupPanel, createGridBagConstraint(0, 4, 1, 4));
-		add(allToGroup, createGridBagConstraint(1, 4));
-		add(selectedToGroup, createGridBagConstraint(1, 5));
-		add(selectedToPool, createGridBagConstraint(1, 6));
-		add(allToPool, createGridBagConstraint(1, 7));
-		add(new JLabel("Übrige Werte"), createGridBagConstraint(2, 3));
+		add(ALL_TO_GROUP, createGridBagConstraint(1, 4));
+		add(SELECTED_TO_GROUP, createGridBagConstraint(1, 5));
+		add(SELECTED_TO_POOL, createGridBagConstraint(1, 6));
+		add(ALL_TO_POOL, createGridBagConstraint(1, 7));
+		add(new JLabel("&Uuml;brige Werte"), createGridBagConstraint(2, 3));
 		add(valuesInPoolPanel, createGridBagConstraint(2, 4, 1, 4));
-		add(speichernButton, createGridBagConstraint(2, 8));
-		speichernButton.addActionListener(new ActionListener() {
-			
-			@Override
+		add(SAVE_BUTTON, createGridBagConstraint(2, 8));
+		SAVE_BUTTON.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				parent.setVisible(false);
 				parent.removeAll();
 			}
 		});
 	}
-	
+
 	public JList createList() {
 		JList list = new JList(new String[]{"Test1", "Test2", "Test3"});
 		list.setFixedCellWidth(100);
@@ -171,12 +163,12 @@ public class GroupingPanel extends JPanel {
 		list.setVisibleRowCount(10);
 		return list;
 	}
-	
+
 	public GridBagConstraints createGridBagConstraint(int gridx,
 			int gridy) {
 		return createGridBagConstraint(gridx, gridy, 1, 1);
 	}
-	
+
 	public GridBagConstraints createGridBagConstraint(int gridx,
 			int gridy, int gridwidth, int gridheight) {
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -187,5 +179,5 @@ public class GroupingPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		return gbc;
 	}
-	
+
 }

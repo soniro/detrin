@@ -4,10 +4,12 @@ import de.soniro.detrin.gui.exceptions.UncaughtExceptionHandler;
 
 /**
  * The main class of the application.
- * 
+ *
  * @author Nina Rothenberg
  */
 public final class Main {
+
+	private Main() { }
 
 	public static void main(String[] args) {
 		/*

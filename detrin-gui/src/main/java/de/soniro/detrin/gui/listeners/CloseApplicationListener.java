@@ -12,7 +12,6 @@ import de.soniro.detrin.gui.DeTrInGui;
  */
 public class CloseApplicationListener implements ActionListener {
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		DeTrInGui.getInstance().setVisible(false);
 		DeTrInGui.getInstance().dispose();
