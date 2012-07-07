@@ -53,7 +53,7 @@ import javax.swing.SwingUtilities;
  *  ScreenImage.createImage( someComponent );
  *
  */
-//CHECKSTYLE:OFF
+// CHECKSTYLE:OFF
 public class ScreenImage
 {
 	private static List<String> types = Arrays.asList( ImageIO.getWriterFileSuffixes() );
@@ -224,3 +224,4 @@ public class ScreenImage
 
 
 }
+// CHECKSTYLE:ON
