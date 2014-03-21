@@ -55,11 +55,8 @@ public class Dataset implements Cloneable {
 	
 	public Dataset getSubsetForAttributeValue(Attribute<?> attribute, String value) {
 		Dataset subset = new Dataset();
-		for (Instance instance : instances) {
-			if (instance.getValueForAttribute(attribute).equals(value)) {
-				subset.add(instance);
-			}
-		}
+		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
+			.forEach(instance -> subset.add(instance));
 		return subset;
 	}
 	
@@ -99,6 +96,9 @@ public class Dataset implements Cloneable {
 	}
 	
 	public void validateInstance(Instance instance) throws InvalidInstanceException {
+		if (instance.isEmpty()) {
+			throw new InvalidInstanceException("Instance may not be empty. And should at least provide one attribute.");
+		}
 		for (Attribute<?> attribute : instance.getAttributes()) {
 			if (!attributes.contains(attribute)) {
 				throw new InvalidInstanceException(String.format("Attribute '%s' is not known in the Dataset.", attribute.getName()));

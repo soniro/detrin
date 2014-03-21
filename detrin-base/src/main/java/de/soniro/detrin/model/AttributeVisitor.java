@@ -3,7 +3,7 @@ package de.soniro.detrin.model;
 /**
  * The Attribute-Visitor allows to get the right handling for a concrete type.
  * When calling the attribute-accept method with this visitor the attribute will 
- * immediately "call back the right visit-method.
+ * immediately call back the right visit-method.
  * 
  * @author Nina Rothenberg
  *
