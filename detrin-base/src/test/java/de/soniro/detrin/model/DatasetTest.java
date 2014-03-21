@@ -118,6 +118,28 @@ public class DatasetTest {
 		assertEquals(2, dataset.size());
 		assertEquals(1, subset.size());
 	}
+
+	@Test
+	public void getValueCountReturnsZeroWithoutInstances() throws InvalidInstanceException {
+		NominalAttribute attribute = addAttributeToDataset();
+		
+		assertEquals(Long.valueOf(0), dataset.getValueCount(attribute, INSTANCE_VALUE));
+	}
+	
+	@Test
+	public void getValueCountCountsHowOftenTheValueOccureInTheInstances() throws InvalidInstanceException {
+		NominalAttribute attribute = addAttributeToDataset();
+		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		
+		dataset.addInstance(instance);
+		dataset.addInstance(otherInstance);
+
+		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
+		when(otherInstance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
+		
+		assertEquals(Long.valueOf(2), dataset.getValueCount(attribute, INSTANCE_VALUE));
+	}
 	
 	private Instance createValidInstance() {
 		final Instance instance = new Instance();
