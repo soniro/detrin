@@ -4,7 +4,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -139,6 +144,33 @@ public class DatasetTest {
 		when(otherInstance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
 		
 		assertEquals(Long.valueOf(2), dataset.getValueCount(attribute, INSTANCE_VALUE));
+	}
+	
+	@Test
+	public void getValueCountDoesNotCountInstancesWithOtherValues() throws InvalidInstanceException {
+		NominalAttribute attribute = addAttributeToDataset();
+		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		
+		dataset.addInstance(instance);
+		dataset.addInstance(otherInstance);
+
+		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
+		when(otherInstance.getValueForAttribute(attribute)).thenReturn("otherValue");
+		
+		assertEquals(Long.valueOf(1), dataset.getValueCount(attribute, INSTANCE_VALUE));
+	}
+	
+	@Test
+	public void cloneDataset() throws InvalidInstanceException {
+		NominalAttribute attribute = addAttributeToDataset();
+		Instance instance = new Instance();
+		instance.put(attribute, INSTANCE_VALUE);
+		dataset.addInstance(instance);
+
+		Dataset clone = (Dataset) dataset.clone();
+		
+		assertEquals(dataset, clone);
 	}
 	
 	private Instance createValidInstance() {

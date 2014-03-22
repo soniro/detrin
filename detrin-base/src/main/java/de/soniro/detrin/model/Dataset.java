@@ -1,10 +1,14 @@
 package de.soniro.detrin.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
 
 import de.soniro.detrin.exception.InvalidInstanceException;
 
@@ -157,6 +161,18 @@ public class Dataset implements Cloneable {
 			}
 		}
 		return clone; 
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Dataset) {
+			boolean equals = true;
+			Dataset other = (Dataset) o;
+			equals &= ListUtils.isEqualList(instances, other.getInstances());
+			equals &= ListUtils.isEqualList(attributes, other.getAttributes());
+			return equals;
+		}
+		return false;
 	}
 	
 }

@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
  * A representation of an Attribute.
  * 
@@ -84,6 +87,22 @@ public abstract class Attribute<T> implements Cloneable {
 	@Override
 	public String toString() {
 		return getName();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Attribute) {
+			Attribute other = (Attribute) o;
+			return new EqualsBuilder().append(name, other.name).append(possibleValues, other.possibleValues)
+					.append(groups, other.groups).append(groupingType, other.groupingType).append(active, other.active).isEquals();
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+	     return new HashCodeBuilder(57, 7).append(name).append(possibleValues).append(groups)
+	    		 .append(groupingType).append(active).toHashCode();
 	}
 	
 	public GroupingType getGroupingType() {
