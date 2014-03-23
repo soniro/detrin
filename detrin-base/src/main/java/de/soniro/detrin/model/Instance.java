@@ -2,9 +2,7 @@ package de.soniro.detrin.model;
 
 import java.util.HashMap;
 import java.util.Set;
-import java.util.Map.Entry;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
