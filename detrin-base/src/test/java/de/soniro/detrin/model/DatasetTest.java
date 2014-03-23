@@ -1,14 +1,9 @@
 package de.soniro.detrin.model;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.junit.Before;
@@ -92,7 +87,7 @@ public class DatasetTest {
 	public void getSubsetForAttributeGroupReturnsAllAttributesContainingToTheNumericGroup() throws InvalidInstanceException {
 		NumericAttribute attribute = addNumericAttributeToDataset();
 		Interval interval = new Interval(0d, 10d);
-		initInstanceMocks(attribute, 5d, 30d);		
+		setupInstances(attribute, 5d, 30d);		
 		Dataset subset = dataset.getSubsetForAttributeGroup(attribute, interval);
 		assertEquals(2, dataset.size());
 		assertEquals(1, subset.size());
@@ -120,26 +115,22 @@ public class DatasetTest {
 	
 	@Test
 	public void cloneDataset() throws InvalidInstanceException {
-		NominalAttribute attribute = addAttributeToDataset();
-		Instance instance = new Instance();
-		instance.put(attribute, INSTANCE_VALUE);
-		dataset.addInstance(instance);
-
-		Dataset clone = (Dataset) dataset.clone();
-		
+		createValidInstance();
+		Dataset clone = (Dataset) dataset.clone();		
 		assertEquals(dataset, clone);
 	}
 
 	private NominalAttribute setupAttributeAndInstances() throws InvalidInstanceException {
 		NominalAttribute attribute = addAttributeToDataset();
-		initInstanceMocks(attribute, INSTANCE_VALUE, "invalidValue");
+		setupInstances(attribute, INSTANCE_VALUE, "invalidValue");
 		return attribute;
 	}
 
-	private <T> void initInstanceMocks(Attribute<T> attribute, T value, T otherValue)
+	private <T> void setupInstances(Attribute<T> attribute, T value, T otherValue)
 			throws InvalidInstanceException {
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		Set<Attribute<?>> attributeSet = Sets.newSet(attribute);
+		when(instance.getAttributes()).thenReturn(attributeSet);
+		when(otherInstance.getAttributes()).thenReturn(attributeSet);
 		dataset.addInstance(instance);
 		dataset.addInstance(otherInstance);
 		when(instance.getValueForAttribute(attribute)).thenReturn(value);
@@ -149,7 +140,7 @@ public class DatasetTest {
 	private Instance createValidInstance() {
 		final Instance instance = new Instance();
 		final NominalAttribute attribute = addAttributeToDataset();
-		instance.put(attribute, "value");
+		instance.put(attribute, INSTANCE_VALUE);
 		return instance;
 	}
 	
