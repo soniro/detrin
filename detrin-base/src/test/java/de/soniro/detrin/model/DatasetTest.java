@@ -72,35 +72,18 @@ public class DatasetTest {
 	
 	@Test
 	public void getSubsetForAttributeValueReturnsAllAttributesWithTheValue() throws InvalidInstanceException {
-		NominalAttribute attribute = addAttributeToDataset();
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
-		
-		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
-		when(otherInstance.getValueForAttribute(attribute)).thenReturn("invalidValue");
-		
+		NominalAttribute attribute = setupAttributeAndInstances();		
 		Dataset subset = dataset.getSubsetForAttributeValue(attribute, INSTANCE_VALUE);
-
 		assertEquals(2, dataset.size());
 		assertEquals(1, subset.size());
 	}
 	
 	@Test
 	public void getSubsetForAttributeGroupReturnsAllAttributesContainingToTheGroup() throws InvalidInstanceException {
-		NominalAttribute attribute = addAttributeToDataset();
+		NominalAttribute attribute = setupAttributeAndInstances();
 		NominalGroup group = new NominalGroup(ATTRIBUTE_NAME);
 		group.getValues().add(INSTANCE_VALUE);
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
-		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
-		when(otherInstance.getValueForAttribute(attribute)).thenReturn("invalidValue");
-		
 		Dataset subset = dataset.getSubsetForAttributeGroup(attribute, group);
-
 		assertEquals(2, dataset.size());
 		assertEquals(1, subset.size());
 	}
@@ -109,17 +92,8 @@ public class DatasetTest {
 	public void getSubsetForAttributeGroupReturnsAllAttributesContainingToTheNumericGroup() throws InvalidInstanceException {
 		NumericAttribute attribute = addNumericAttributeToDataset();
 		Interval interval = new Interval(0d, 10d);
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		
-		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
-		
-		when(instance.getValueForAttribute(attribute)).thenReturn(5d);
-		when(otherInstance.getValueForAttribute(attribute)).thenReturn(30d);
-		
+		initInstanceMocks(attribute, 5d, 30d);		
 		Dataset subset = dataset.getSubsetForAttributeGroup(attribute, interval);
-
 		assertEquals(2, dataset.size());
 		assertEquals(1, subset.size());
 	}
@@ -127,37 +101,20 @@ public class DatasetTest {
 	@Test
 	public void getValueCountReturnsZeroWithoutInstances() throws InvalidInstanceException {
 		NominalAttribute attribute = addAttributeToDataset();
-		
 		assertEquals(Long.valueOf(0), dataset.getValueCount(attribute, INSTANCE_VALUE));
 	}
 	
 	@Test
 	public void getValueCountCountsHowOftenTheValueOccureInTheInstances() throws InvalidInstanceException {
-		NominalAttribute attribute = addAttributeToDataset();
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		
-		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
-
+		NominalAttribute attribute = setupAttributeAndInstances();
 		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
 		when(otherInstance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
-		
 		assertEquals(Long.valueOf(2), dataset.getValueCount(attribute, INSTANCE_VALUE));
 	}
 	
 	@Test
 	public void getValueCountDoesNotCountInstancesWithOtherValues() throws InvalidInstanceException {
-		NominalAttribute attribute = addAttributeToDataset();
-		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
-		
-		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
-
-		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
-		when(otherInstance.getValueForAttribute(attribute)).thenReturn("otherValue");
-		
+		NominalAttribute attribute = setupAttributeAndInstances();		
 		assertEquals(Long.valueOf(1), dataset.getValueCount(attribute, INSTANCE_VALUE));
 	}
 	
@@ -171,6 +128,22 @@ public class DatasetTest {
 		Dataset clone = (Dataset) dataset.clone();
 		
 		assertEquals(dataset, clone);
+	}
+
+	private NominalAttribute setupAttributeAndInstances() throws InvalidInstanceException {
+		NominalAttribute attribute = addAttributeToDataset();
+		initInstanceMocks(attribute, INSTANCE_VALUE, "invalidValue");
+		return attribute;
+	}
+
+	private <T> void initInstanceMocks(Attribute<T> attribute, T value, T otherValue)
+			throws InvalidInstanceException {
+		when(instance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		when(otherInstance.getAttributes()).thenReturn(Sets.newSet(attribute));
+		dataset.addInstance(instance);
+		dataset.addInstance(otherInstance);
+		when(instance.getValueForAttribute(attribute)).thenReturn(value);
+		when(otherInstance.getValueForAttribute(attribute)).thenReturn(otherValue);
 	}
 	
 	private Instance createValidInstance() {
