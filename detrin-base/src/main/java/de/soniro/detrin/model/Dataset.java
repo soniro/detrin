@@ -59,8 +59,13 @@ public class Dataset implements Cloneable {
 	
 	public Dataset getSubsetForAttributeValue(Attribute<?> attribute, String value) {
 		Dataset subset = new Dataset();
-		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
-			.forEach(instance -> subset.add(instance));
+//		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
+//			.forEach(instance -> subset.add(instance));
+		for (Instance instance : instances) {
+			if (instance.getValueForAttribute(attribute).equals(value)) {
+				subset.add(instance);
+			}
+		}
 		return subset;
 	}
 	
