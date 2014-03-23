@@ -1,14 +1,13 @@
 package de.soniro.detrin.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import de.soniro.detrin.exception.InvalidInstanceException;
 
@@ -59,13 +58,8 @@ public class Dataset implements Cloneable {
 	
 	public Dataset getSubsetForAttributeValue(Attribute<?> attribute, String value) {
 		Dataset subset = new Dataset();
-//		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
-//			.forEach(instance -> subset.add(instance));
-		for (Instance instance : instances) {
-			if (instance.getValueForAttribute(attribute).equals(value)) {
-				subset.add(instance);
-			}
-		}
+		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
+			.forEach(instance -> subset.add(instance));
 		return subset;
 	}
 	
@@ -180,4 +174,8 @@ public class Dataset implements Cloneable {
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder(383, 9481).append(instances).append(attributes).hashCode();
+	};	
 }

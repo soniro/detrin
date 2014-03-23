@@ -92,7 +92,7 @@ public abstract class Attribute<T> implements Cloneable {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Attribute) {
-			Attribute other = (Attribute) o;
+			Attribute<?> other = (Attribute<?>) o;
 			return new EqualsBuilder().append(name, other.name).append(possibleValues, other.possibleValues)
 					.append(groups, other.groups).append(groupingType, other.groupingType).append(active, other.active).isEquals();
 		}
