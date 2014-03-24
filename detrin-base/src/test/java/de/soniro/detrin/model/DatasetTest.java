@@ -1,6 +1,7 @@
 package de.soniro.detrin.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.collections.Sets;
 
@@ -115,11 +117,62 @@ public class DatasetTest {
 	
 	@Test
 	public void cloneDataset() throws InvalidInstanceException {
-		createValidInstance();
+		dataset.addInstance(createValidInstance());
 		Dataset clone = (Dataset) dataset.clone();		
 		assertEquals(dataset, clone);
 	}
+	
+	@Test
+	public void getCurrentValuesForAttributeReturnsAllInstanceValuesForAttribute() throws InvalidInstanceException {
+		NominalAttribute attribute = setupAttributeAndInstances();
+		Set<String> currentValues = dataset.getCurrentValuesForAttribute(attribute);
+		assertEquals(2, currentValues.size());
+		assertTrue(currentValues.contains(INSTANCE_VALUE));
+		assertTrue(currentValues.contains("invalidValue"));
+	}
+	
+	@Test
+	public void getCurrentValuesForAttributeIgnoresNegativeValues() throws InvalidInstanceException {
+		NumericAttribute attribute = addNumericAttributeToDataset();
+		setupInstances(attribute, 5d, -30d);	
+		Set<Double> currentValues = dataset.getCurrentValuesForAttribute(attribute);
+		assertEquals(1, currentValues.size());
+		assertTrue(currentValues.contains(5d));
+		assertFalse(currentValues.contains(-30d));
+	}
+	
+	@Test
+	public void equalDatasetHaveSameHashCodeAndStringRepresentation() throws InvalidInstanceException {
+		dataset.addInstance(createValidInstance());
+		Dataset clone = (Dataset) dataset.clone();		
+		assertTrue(dataset.equals(clone));
+		assertEquals(dataset.toString(), clone.toString());
+		assertEquals(dataset.hashCode(), clone.hashCode());
+	}
 
+	@Test
+	public void unequalDatasetHaveDifferentHashCodeAndStringRepresentation() throws InvalidInstanceException {
+		dataset.addInstance(createValidInstance());
+		Dataset firstDataset = (Dataset) dataset.clone();
+		NumericAttribute attribute = addNumericAttributeToDataset();
+		setupInstances(attribute, 5d, 30d);
+		assertFalse(dataset.equals(firstDataset));
+		assertFalse(dataset.toString().equals(firstDataset.toString()));
+		assertFalse(dataset.hashCode() == firstDataset.hashCode());
+	}
+	
+	@Test
+	public void getMostProperValueForAttributeReturnsMostCommonValue() throws InvalidInstanceException {
+		NominalAttribute attribute = setupAttributeAndInstances();
+		setupInstance(attribute, Mockito.mock(Instance.class), INSTANCE_VALUE);
+		setupInstance(attribute, Mockito.mock(Instance.class), "oneValueMore");
+		attribute.getPossibleValues().add("invalidValue");
+		attribute.getPossibleValues().add(INSTANCE_VALUE);
+		attribute.getPossibleValues().add("oneValueMore");
+		String mostProperValue = dataset.getMostProperValueForAttribute(attribute);
+		assertEquals(INSTANCE_VALUE, mostProperValue);
+	}
+	
 	private NominalAttribute setupAttributeAndInstances() throws InvalidInstanceException {
 		NominalAttribute attribute = addAttributeToDataset();
 		setupInstances(attribute, INSTANCE_VALUE, "invalidValue");
@@ -128,13 +181,15 @@ public class DatasetTest {
 
 	private <T> void setupInstances(Attribute<T> attribute, T value, T otherValue)
 			throws InvalidInstanceException {
+		setupInstance(attribute, instance, value);
+		setupInstance(attribute, otherInstance, otherValue);
+	}
+	
+	private <T> void setupInstance(Attribute<T> attribute, Instance instance, T value) throws InvalidInstanceException {
 		Set<Attribute<?>> attributeSet = Sets.newSet(attribute);
 		when(instance.getAttributes()).thenReturn(attributeSet);
-		when(otherInstance.getAttributes()).thenReturn(attributeSet);
 		dataset.addInstance(instance);
-		dataset.addInstance(otherInstance);
 		when(instance.getValueForAttribute(attribute)).thenReturn(value);
-		when(otherInstance.getValueForAttribute(attribute)).thenReturn(otherValue);
 	}
 	
 	private Instance createValidInstance() {

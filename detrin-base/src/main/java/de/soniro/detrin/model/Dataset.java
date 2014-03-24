@@ -176,6 +176,6 @@ public class Dataset implements Cloneable {
 	
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(383, 9481).append(instances).append(attributes).hashCode();
+		return new HashCodeBuilder(383, 9481).append(instances).append(attributes).toHashCode();
 	};	
 }
