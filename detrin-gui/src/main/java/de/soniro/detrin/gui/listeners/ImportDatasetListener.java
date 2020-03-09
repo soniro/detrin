@@ -1,19 +1,5 @@
 package de.soniro.detrin.gui.listeners;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import de.soniro.detrin.FileHandler;
 import de.soniro.detrin.core.DecisionTreeInducer;
 import de.soniro.detrin.exception.InvalidInstanceException;
@@ -23,12 +9,19 @@ import de.soniro.detrin.gui.i18n.Message;
 import de.soniro.detrin.gui.i18n.Messages;
 import de.soniro.detrin.gui.panel.OptionPaneInput;
 import de.soniro.detrin.model.Dataset;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * The file import listener.
- *
- * @author Nina Rothenberg
- */
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ImportDatasetListener implements ActionListener {
 
 	private static final Log LOGGER = LogFactory.getLog(ImportDatasetListener.class);
@@ -40,16 +33,16 @@ public class ImportDatasetListener implements ActionListener {
 		importFile();
 	}
 
-	public void importFile() {
+	private void importFile() {
 		if (fileHandler == null) {
-			fileHandler = new HashMap<String, List<FileHandler>>();
+			fileHandler = new HashMap<>();
 			List<FileHandler> fileHandlerList = new DecisionTreeInducer().getAllPossibleInstances(FileHandler.class);
 			for (FileHandler currentFileHandler : fileHandlerList) {
 				for (String fileEnding : currentFileHandler
 						.getHandableFileEndings()) {
 					if (!fileHandler.containsKey(fileEnding)) {
 						fileHandler.put(fileEnding,
-								new ArrayList<FileHandler>());
+								new ArrayList<>());
 					}
 					fileHandler.get(fileEnding).add(currentFileHandler);
 					LOGGER.debug(Messages.getInstance().getLabel(Message.ADD_FILE_HANDLER, fileEnding, fileHandler.get(fileEnding).size()));
@@ -58,6 +51,7 @@ public class ImportDatasetListener implements ActionListener {
 		}
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new ImportFileFilter());
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		int returnVal = fileChooser.showOpenDialog(DeTrInGui.getInstance());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			String[] splits = fileChooser.getSelectedFile().getName().split("\\.");
@@ -83,9 +77,9 @@ public class ImportDatasetListener implements ActionListener {
 	}
 
 	private void chooseFileHandler(List<FileHandler> fileHandler) {
-		List<OptionPaneInput<FileHandler>> fileHandlerForOptionPane = new ArrayList<OptionPaneInput<FileHandler>>();
+		List<OptionPaneInput<FileHandler>> fileHandlerForOptionPane = new ArrayList<>();
 		for (FileHandler currentFileHandler : fileHandler) {
-			fileHandlerForOptionPane.add(new OptionPaneInput<FileHandler>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
+			fileHandlerForOptionPane.add(new OptionPaneInput<>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
 		}
 		FileHandler selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE,
 				Message.SELECT_FILE_HANDLER_MESSAGE, fileHandlerForOptionPane, fileHandlerForOptionPane.get(0)).getValue();
@@ -96,9 +90,9 @@ public class ImportDatasetListener implements ActionListener {
 
 			@Override
 			public String getDescription() {
-				String description = "";
+				StringBuilder description = new StringBuilder();
 				for (String fileEnding : fileHandler.keySet()) {
-					description += fileEnding.toLowerCase() + ", ";
+					description.append(fileEnding.toLowerCase()).append(", ");
 				}
 				return description.substring(0, description.length() - 2);
 			}
