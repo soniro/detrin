@@ -1,0 +1,11 @@
+dependencies {
+    compile project(':detrin-base')
+    implementation 'commons-lang:commons-lang:2.4'
+}
+
+
+jar {
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

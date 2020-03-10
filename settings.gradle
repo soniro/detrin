@@ -1,0 +1,6 @@
+rootProject.name = 'DeTrIn'
+
+include 'detrin-base'
+include 'detrin-core'
+include 'detrin-gui'
+include 'detrin-standard'

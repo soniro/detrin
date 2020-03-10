@@ -1,0 +1,42 @@
+apply plugin: 'base'
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'junit:junit:4.11'
+        implementation 'commons-lang:commons-lang:2.2'
+        implementation 'commons-collections:commons-collections:20040616'
+
+        testImplementation 'org.mockito:mockito-all:1.9.5'
+    }
+
+    jacoco {
+        toolVersion = "0.8.5"
+        reportsDir = file("${buildDir}/coverage-reports")
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("${buildDir}/coverage-reports/jacoco")
+        }
+    }
+
+    check.dependsOn jacocoTestReport
+
+
+}
+
