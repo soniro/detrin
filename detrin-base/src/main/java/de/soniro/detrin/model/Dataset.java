@@ -1,26 +1,22 @@
 package de.soniro.detrin.model;
 
+import de.soniro.detrin.exception.InvalidInstanceException;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import static java.lang.String.format;
 
-import de.soniro.detrin.exception.InvalidInstanceException;
-
-/**
- * The Dataset is a collection of instances. 
- * 
- * @author Nina Rothenberg
- */
 public class Dataset implements Cloneable {
 	
-	private List<Instance> instances = new ArrayList<Instance>();
+	private List<Instance> instances = new ArrayList<>();
 	
-	private List<Attribute<?>> attributes = new ArrayList<Attribute<?>>();
+	private List<Attribute<?>> attributes = new ArrayList<>();
 	
 	public List<Instance> getInstances() {
 		return instances;
@@ -45,7 +41,7 @@ public class Dataset implements Cloneable {
 				return attribute;
 			}
 		}
-		throw new IllegalArgumentException(String.format("There is no attribute with the name '%s'.", attributeName));
+		throw new IllegalArgumentException(format("There is no attribute with the name '%s'.", attributeName));
 	}
 	
 	public int size() {
@@ -58,14 +54,12 @@ public class Dataset implements Cloneable {
 	
 	public Dataset getSubsetForAttributeValue(Attribute<?> attribute, String value) {
 		Dataset subset = new Dataset();
-		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value))
-			.forEach(instance -> subset.add(instance));
+		instances.stream().filter(instance -> instance.getValueForAttribute(attribute).equals(value)).forEach(subset::add);
 		return subset;
 	}
 	
 	public <T>Dataset getSubsetForAttributeGroup(Attribute<T> attribute, Group<T> group) {
 		Dataset subset = new Dataset();
-		String values = "[";
 		for (Instance instance : instances) {
 			T value;
 			if (attribute instanceof NumericAttribute) {
@@ -76,15 +70,13 @@ public class Dataset implements Cloneable {
 			}
 			if (group.isValueInGroup(value)) {
 				subset.add(instance);
-				values += value + ", ";
 			}
 		}
-		values += "]";
 		return subset;
 	}
 	
 	public <T>Set<T> getCurrentValuesForAttribute(Attribute<T> attribute) {
-		Set<T> currentValues = new HashSet<T>();
+		Set<T> currentValues = new HashSet<>();
 		for (Instance instance : instances) {
 			T value = instance.getValueForAttribute(attribute);
 			if (value instanceof Number) {
@@ -98,14 +90,15 @@ public class Dataset implements Cloneable {
 		return currentValues;
 	}
 	
-	public void validateInstance(Instance instance) throws InvalidInstanceException {
+	private void validateInstance(Instance instance) throws InvalidInstanceException {
 		if (instance.isEmpty()) {
 			throw new InvalidInstanceException("Instance may not be empty. And should at least provide one attribute.");
 		}
-		for (Attribute<?> attribute : instance.getAttributes()) {
-			if (!attributes.contains(attribute)) {
-				throw new InvalidInstanceException(String.format("Attribute '%s' is not known in the Dataset.", attribute.getName()));
-			}
+		for (String attribute : instance.getAttributes()) {
+			attributes.stream()
+					.filter(a -> attribute.equals(a.getName()))
+					.findAny()
+					.orElseThrow(() -> new InvalidInstanceException(format("Attribute '%s' is not known in the Dataset.", attribute)));
 		}
 	}
 	
@@ -134,9 +127,9 @@ public class Dataset implements Cloneable {
 	
 	@Override
 	public String toString() {
-		StringBuffer output = new StringBuffer();
+		StringBuilder output = new StringBuilder();
 		for (Instance instance : instances) {
-			output.append("[" + instance + "]\n");
+			output.append("[").append(instance).append("]\n");
 		}
 		return output.toString();
 	}
@@ -149,8 +142,8 @@ public class Dataset implements Cloneable {
 		}
 		for (Instance instance : instances) {
 			Instance instanceClone = new Instance();
-			for (Entry<Attribute<?>, Object> value : instance.entrySet()) {
-				instanceClone.put(clone.getAttributeByName(value.getKey().getName()), value.getValue());
+			for (Entry<String, Object> value : instance.entrySet()) {
+				instanceClone.put(value.getKey(), value.getValue());
 			}
 			try {
 				clone.addInstance(instanceClone);
@@ -165,11 +158,8 @@ public class Dataset implements Cloneable {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Dataset) {
-			boolean equals = true;
 			Dataset other = (Dataset) o;
-			equals &= ListUtils.isEqualList(instances, other.getInstances());
-			equals &= ListUtils.isEqualList(attributes, other.getAttributes());
-			return equals;
+			return ListUtils.isEqualList(instances, other.getInstances()) && ListUtils.isEqualList(attributes, other.getAttributes());
 		}
 		return false;
 	}
@@ -177,5 +167,5 @@ public class Dataset implements Cloneable {
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(383, 9481).append(instances).append(attributes).toHashCode();
-	};	
+	}
 }

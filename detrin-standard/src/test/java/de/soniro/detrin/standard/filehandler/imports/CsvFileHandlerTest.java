@@ -27,7 +27,7 @@ public class CsvFileHandlerTest {
 
         Attribute attribute = dataset.getAttributes().get(0);
         Instance instance = dataset.getInstances().get(0);
-        assertTrue(instance.containsKey(attribute));
+        assertTrue(instance.containsKey("attribute1"));
         assertEquals("value1", instance.getValueForAttribute(attribute));
     }
 }

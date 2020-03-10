@@ -1,27 +1,24 @@
 package de.soniro.detrin.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.Set;
-
+import de.soniro.detrin.exception.InvalidInstanceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.collections.Sets;
 
-import de.soniro.detrin.exception.InvalidInstanceException;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.collections.Sets.newSet;
 
 public class DatasetTest {
 
 	private static final String ATTRIBUTE_NAME = "attribute";
 	private static final String INSTANCE_VALUE = "value";
 	
-	Dataset dataset = new Dataset();
+	private Dataset dataset = new Dataset();
 	
 	@Mock
 	Instance instance;
@@ -96,13 +93,13 @@ public class DatasetTest {
 	}
 
 	@Test
-	public void getValueCountReturnsZeroWithoutInstances() throws InvalidInstanceException {
+	public void getValueCountReturnsZeroWithoutInstances() {
 		NominalAttribute attribute = addAttributeToDataset();
 		assertEquals(Long.valueOf(0), dataset.getValueCount(attribute, INSTANCE_VALUE));
 	}
 	
 	@Test
-	public void getValueCountCountsHowOftenTheValueOccureInTheInstances() throws InvalidInstanceException {
+	public void getValueCountCountsHowOftenTheValueOccurInTheInstances() throws InvalidInstanceException {
 		NominalAttribute attribute = setupAttributeAndInstances();
 		when(instance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
 		when(otherInstance.getValueForAttribute(attribute)).thenReturn(INSTANCE_VALUE);
@@ -116,7 +113,7 @@ public class DatasetTest {
 	}
 	
 	@Test
-	public void cloneDataset() throws InvalidInstanceException {
+	public void cloneDataset() throws InvalidInstanceException, CloneNotSupportedException {
 		dataset.addInstance(createValidInstance());
 		Dataset clone = (Dataset) dataset.clone();		
 		assertEquals(dataset, clone);
@@ -142,23 +139,23 @@ public class DatasetTest {
 	}
 	
 	@Test
-	public void equalDatasetHaveSameHashCodeAndStringRepresentation() throws InvalidInstanceException {
+	public void equalDatasetHaveSameHashCodeAndStringRepresentation() throws InvalidInstanceException, CloneNotSupportedException {
 		dataset.addInstance(createValidInstance());
 		Dataset clone = (Dataset) dataset.clone();		
-		assertTrue(dataset.equals(clone));
+		assertEquals(dataset, clone);
 		assertEquals(dataset.toString(), clone.toString());
 		assertEquals(dataset.hashCode(), clone.hashCode());
 	}
 
 	@Test
-	public void unequalDatasetHaveDifferentHashCodeAndStringRepresentation() throws InvalidInstanceException {
+	public void unequalDatasetHaveDifferentHashCodeAndStringRepresentation() throws InvalidInstanceException, CloneNotSupportedException {
 		dataset.addInstance(createValidInstance());
 		Dataset firstDataset = (Dataset) dataset.clone();
 		NumericAttribute attribute = addNumericAttributeToDataset();
 		setupInstances(attribute, 5d, 30d);
-		assertFalse(dataset.equals(firstDataset));
-		assertFalse(dataset.toString().equals(firstDataset.toString()));
-		assertFalse(dataset.hashCode() == firstDataset.hashCode());
+		assertNotEquals(dataset, firstDataset);
+		assertNotEquals(dataset.toString(), firstDataset.toString());
+		assertNotEquals(dataset.hashCode(), firstDataset.hashCode());
 	}
 	
 	@Test
@@ -186,7 +183,7 @@ public class DatasetTest {
 	}
 	
 	private <T> void setupInstance(Attribute<T> attribute, Instance instance, T value) throws InvalidInstanceException {
-		Set<Attribute<?>> attributeSet = Sets.newSet(attribute);
+		Set<String> attributeSet = newSet(attribute.getName());
 		when(instance.getAttributes()).thenReturn(attributeSet);
 		dataset.addInstance(instance);
 		when(instance.getValueForAttribute(attribute)).thenReturn(value);
@@ -195,7 +192,7 @@ public class DatasetTest {
 	private Instance createValidInstance() {
 		final Instance instance = new Instance();
 		final NominalAttribute attribute = addAttributeToDataset();
-		instance.put(attribute, INSTANCE_VALUE);
+		instance.put(attribute.getName(), INSTANCE_VALUE);
 		return instance;
 	}
 	
@@ -214,7 +211,7 @@ public class DatasetTest {
 	private Instance createInvalidInstance() {
 		final Instance instance = new Instance();
 		addAttributeToDataset();
-		instance.put(new NominalAttribute("nonExistingAttribute"), "value");
+		instance.put("nonExistingAttribute", "value");
 		return instance;
 	}
 	

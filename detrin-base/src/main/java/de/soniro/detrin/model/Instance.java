@@ -1,34 +1,28 @@
 package de.soniro.detrin.model;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
-/**
- * An instance maps the values to the attributes.
- * 
- * @author Nina Rothenberg
- *
- */
-public class Instance extends HashMap<Attribute<?>, Object> {
+public class Instance extends HashMap<String, Object> {
 
 	private static final long serialVersionUID = -8984097859628159102L;
 
 	@SuppressWarnings("unchecked")
 	public <T>T getValueForAttribute(Attribute<T> attribute) {
-		return (T) get(attribute);
+		return (T) get(attribute.getName());
 	}
 	
-	public Set<Attribute<?>> getAttributes() {
+	public Set<String> getAttributes() {
 		return keySet();
 	}
 	
 	@Override
 	public String toString() {
-		StringBuffer output = new StringBuffer();
-		for (Entry<Attribute<?>, Object> entry : entrySet()) {
-			output.append(entry.getKey().getName() + " = " + entry.getValue() + ", ");
+		StringBuilder output = new StringBuilder();
+		for (Entry<String, Object> entry : entrySet()) {
+			output.append(entry.getKey()).append(" = ").append(entry.getValue()).append(", ");
 		}
 		// Cut last comma.
 		return output.substring(0, output.length() - 2);
@@ -40,7 +34,7 @@ public class Instance extends HashMap<Attribute<?>, Object> {
 			Instance other = (Instance) o;
 			if (this.size() != other.size()) return false;
 			boolean equals = true;
-			for (Entry<Attribute<?>, Object> entry : entrySet()) {
+			for (Entry<String, Object> entry : entrySet()) {
 				if (other.containsKey(entry.getKey())) {
 					equals &= other.get(entry.getKey()).equals(entry.getValue());
 				} else {
