@@ -1,20 +1,5 @@
 package de.soniro.detrin.gui.listeners;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import de.soniro.detrin.FileExport;
 import de.soniro.detrin.core.DecisionTreeInducer;
 import de.soniro.detrin.gui.DeTrInGui;
@@ -24,12 +9,20 @@ import de.soniro.detrin.gui.i18n.Messages;
 import de.soniro.detrin.gui.panel.DecisionTreePanel;
 import de.soniro.detrin.gui.panel.OptionPaneInput;
 import de.soniro.detrin.gui.panel.PropertiesPanel;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * The file import listener.
- *
- * @author Nina Rothenberg
- */
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ExportReportListener implements ActionListener {
 
 	private static final Log LOGGER = LogFactory.getLog(ExportReportListener.class);
@@ -44,6 +37,7 @@ public class ExportReportListener implements ActionListener {
 		}
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new ExportFileFilter());
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		int returnVal = fileChooser.showSaveDialog(DeTrInGui.getInstance());
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -60,9 +54,9 @@ public class ExportReportListener implements ActionListener {
 	}
 
 	private void chooseFileExport(List<FileExport> fileHandler) {
-		List<OptionPaneInput<FileExport>> fileHandlerForOptionPane = new ArrayList<OptionPaneInput<FileExport>>();
+		List<OptionPaneInput<FileExport>> fileHandlerForOptionPane = new ArrayList<>();
 		for (FileExport currentFileHandler : fileHandler) {
-			fileHandlerForOptionPane.add(new OptionPaneInput<FileExport>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
+			fileHandlerForOptionPane.add(new OptionPaneInput<>(currentFileHandler.getLabel(Messages.getInstance().getLocale()), currentFileHandler));
 		}
 		FileExport selectedFileHandler = OptionPane.showComboBoxDialogAndGetChoice(Message.SELECT_FILE_HANDLER_TITLE,
 				Message.SELECT_FILE_HANDLER_MESSAGE, fileHandlerForOptionPane, fileHandlerForOptionPane.get(0)).getValue();
@@ -75,12 +69,12 @@ public class ExportReportListener implements ActionListener {
 	}
 
 	private void initFileHandlers() {
-		fileHandler = new HashMap<String, List<FileExport>>();
+		fileHandler = new HashMap<>();
 		List<FileExport> fileHandlerList = new DecisionTreeInducer().getAllPossibleInstances(FileExport.class);
 		for (FileExport currentFileHandler : fileHandlerList) {
 			String fileEnding = currentFileHandler.getFileEnding();
 			if (!fileHandler.containsKey(fileEnding)) {
-				fileHandler.put(fileEnding, new ArrayList<FileExport>());
+				fileHandler.put(fileEnding, new ArrayList<>());
 			}
 			fileHandler.get(fileEnding).add(currentFileHandler);
 			LOGGER.debug(Messages.getInstance().getLabel(Message.ADD_FILE_HANDLER, fileEnding, fileHandler.get(fileEnding).size()));
@@ -91,9 +85,9 @@ public class ExportReportListener implements ActionListener {
 
 		@Override
 		public String getDescription() {
-			String description = "";
+			StringBuilder description = new StringBuilder();
 			for (String fileEnding : fileHandler.keySet()) {
-				description += fileEnding.toLowerCase() + ", ";
+				description.append(fileEnding.toLowerCase()).append(", ");
 			}
 			return description.substring(0, description.length() - 2);
 		}
