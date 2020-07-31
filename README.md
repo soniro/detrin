@@ -18,6 +18,6 @@ DeTrIn is the result of my master thesis 'Decision Tree Generation as an elearni
 
 Feel free to send any kind of pull request.
 
-## LICENCE
+## Licence
 
 DeTrIn is licensed under the terms of the Apache license. See [LICENCE](LICENCE) for more information.
